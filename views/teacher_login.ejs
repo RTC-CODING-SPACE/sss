@@ -1,0 +1,67 @@
+<%- include("partials/_header.ejs")%>
+<body style="background-color: #c8e8e3;">
+    <%- include('partials/_navbar.ejs')%>
+    <!-- Main content -->
+    <div class="container-fluid">
+        <div class=" base row  shadow-2" style="height: 85vh;margin:2rem ;padding:5rem 1rem">
+            <div class="row">
+                <!-- IMGAGE -->
+                <div class="col-md-6">
+                    <div class="col-md-12">
+                        <center>
+                            <img src="/assets/img/teacher_default.png" class="" alt="" style="width: 60%">
+
+                        </center>
+                    </div>
+                    <div class="col-md-12">
+                        <p class="text-center fw-bolder fs-1" style="color: #58baab;">TEACHER</p>
+
+                    </div>
+                </div>
+                <!-- FORM -->
+                <div class="col-md-6">
+                <div class="col-md-12">
+                        <h1 class="fs-1 fw-bold text-center">LOGIN</h1>
+                    </div>
+                            <!-- FORM -->
+                            <form action="/home" method="POST">
+                                <!-- ID CARD NO. -->
+                                <div class="col-md-11">
+                                    <label for="studentID" class="form-label fs-3">ID CARD NO.</label>
+                                    <input type="text" class="form-control" id="userID" name="userID" style="background-color: #c8e8e3;padding:1rem;border:none;border-radius:1rem">
+                                </div>
+                                <br>
+                                <!-- PASSWORD -->
+                                <div class="col-md-11">
+                                    <label for="password" class="form-label fs-3">PASSWORD</label>
+                                    <input type="password" class="form-control" id="password" name="password" style="background-color: #c8e8e3;padding:1rem;border:none;border-radius:1rem">
+                                    <?php
+
+                                        if(isset($_SESSION['error'])){
+
+                                    ?>
+
+                                    <span class="text-danger"><?= $_SESSION['error']?></span>
+
+                                    <?php
+
+                                        unset($_SESSION['error']);}
+
+                                    ?>
+                                </div>
+                                <br>
+                                <br>
+                                <div class="col-md-11 text-center">
+                                <button class="btn btn-green fs-2 fw-bold text-center " style="background-color: #58baab;width:60%;padding:1rem">LOGIN</button>
+                                </div>
+                                <br>
+                                <!--<a href="" class="text-danger" style="text-decoration: none;color:#f97f6e;">ลืมรหัสผ่าน ?</a>-->
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

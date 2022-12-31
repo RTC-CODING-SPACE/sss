@@ -1,26 +1,36 @@
 const md5 = require("md5");
 
 module.exports = {
-    login: (req, res) => {
+    login: async(req, res) => {
         sess = req.session;
         check_login = async() => {
             if (account = await databaseQuery(`SELECT * FROM student INNER JOIN department ON student.departmentID = department.departmentID WHERE studentID=${req.body.userID} AND password="${md5(req.body.password)}"`)) {
-                sess.userID = account[0].studentID;
-                sess.role = 2;
-                res.redirect('/student');
-            } else if (account = await databaseQuery(`SELECT * FROM teacher WHERE IDcard=${req.body.userID} AND password="${md5(req.body.password)}"`)) {
-                sess.name = account.name;
-                sess.role = 1;
-                res.render("teacher_index.ejs");
-            } else if (account = await databaseQuery(`SELECT * FROM admin WHERE username=${req.body.userID} AND password="${md5(req.body.password)}"`)) {
-                sess.name = account.name;
-                sess.role = 0;
-                res.render("admin_index.ejs");
-            } else {
-                return false;
+                if(account.length !== 0){
+                    sess.userID = account[0].studentID;
+                    sess.role = 2;
+                    res.redirect('/student');
+                }
             }
+
+            if (account = await databaseQuery(`SELECT * FROM teacher INNER JOIN department ON teacher.departmentID = department.departmentID WHERE IDcard=${req.body.userID} AND password="${md5(req.body.password)}"`)) {
+                if(account.length !== 0){
+                    sess.userID = account[0].IDcard;
+                    sess.role = 1;
+                    res.redirect("/teacher");
+                }
+            }
+
+            if (account = await databaseQuery(`SELECT * FROM admin WHERE username=${req.body.userID} AND password="${md5(req.body.password)}"`)) {
+                if(account.length !== 0){
+                    sess.name = account.name;
+                    sess.role = 0;
+                    res.render("admin_index.ejs");
+                }
+            }
+            
+            return false;
         }
 
-        check_login();
+        await check_login();
     }
 }

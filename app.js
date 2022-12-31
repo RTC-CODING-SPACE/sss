@@ -27,7 +27,26 @@ const {
         getEditProfilePage,
         editStudentProfile
     } = require('./routes/student');
-const { searchScholarships, searchTransaction, searchTransactionPrint, searchTransaction2 } = require('./routes/search');
+
+const {
+        getTeacherPage,
+        getTeacherQueryPage,
+        addStudent,
+        getEditProfilePage2,
+        editStudentProfile2,
+        getStudentsListPage,
+        getAddScholarshipPage,
+        getStudentsListQueryPage,
+        addFund
+    } = require('./routes/teacher')
+const {
+        searchScholarships,
+        searchTransaction,
+        searchTransactionPrint,
+        searchTransaction2,
+        searchStudent,
+        searchStudent2
+    } = require('./routes/search');
 
 
 // MYSQLI CONNECT
@@ -49,12 +68,84 @@ global.databaseQuery = (query) => {
     return new Promise((resolve, reject) => {
         console.log(query);
         db.query(query, (err, result) => {
-            if (err) return reject(err);
+            if (err) resolve (false);
             if (result.length == 0) resolve(result);
             resolve(result);
         })
     })
 }
+
+global.getAccountDetail = async(userID, role) => {
+    let accountDetail;
+    switch (role) {
+        case 0:
+            accountDetail = await databaseQuery(`SELECT * FROM admin WHERE username=${userID}`);
+            break;
+        case 1:
+            accountDetail = await databaseQuery(`SELECT * FROM teacher INNER JOIN department ON teacher.departmentID = department.departmentID WHERE IDcard=${userID}`);
+            break;
+        case 2:
+            accountDetail = await databaseQuery(`SELECT * FROM student INNER JOIN department ON student.departmentID = department.departmentID WHERE studentID=${userID}`);
+            break;
+    }
+    return accountDetail[0];
+}
+
+global.getTransactionDetail = async(userID, querydate = {}) => {
+    let income_total = 0;
+    let expense_total = 0;
+    let balance = 0;
+
+    queryDateParam = "";
+    if (Object.keys(querydate).length !== 0) {
+        if (querydate.month !== '0') queryDateParam = queryDateParam + ` AND MONTH(date)=${querydate.month}`;
+        if (querydate.year !== '0') queryDateParam = queryDateParam + ` AND YEAR(date)=${querydate.year}`;
+    };
+
+    let incomeLists = await databaseQuery(`SELECT listID, studentID, scholarship.name as detail, tag, amount, type, date FROM scholarshiplists INNER JOIN scholarship ON scholarshiplists.scholarshipID = scholarship.scholarshipID WHERE studentID=${userID} ${queryDateParam}`);
+    let expenseLists = await databaseQuery(`SELECT * FROM expenselists WHERE studentID=${userID} ${queryDateParam}`);
+    let AllLists = [...incomeLists, ...expenseLists];
+
+    AllLists.sort(function(a, b) {
+        return new Date(b.date) - new Date(a.date);
+    })
+
+    incomeLists.forEach(list => {
+        income_total += list.amount;
+    })
+
+    expenseLists.forEach(list => {
+        expense_total += list.amount;
+    })
+
+    balance = income_total - expense_total;
+    if(balance < 0) balance = 0;
+
+    return {
+        balance: balance,
+        income: income_total,
+        expense: expense_total,
+        transactions: AllLists
+    }
+}
+
+global.roleIdToRoleName = (roleID) => {
+    let role = ""
+    switch (roleID) {
+        case 0:
+            role = "admin";
+            break;
+        case 1:
+            role = "teacher";
+            break;
+        case 2:
+            role = "student";
+            break;
+    }
+
+    return role
+}
+
 global.db = db;
 
 // App setup
@@ -104,6 +195,12 @@ app.get('/about', (req, res) => {
     res.render('index_about.ejs', { webTitle: "เกี่ยวกับเรา" });
 })
 
+// LOGOUT
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/');
+})
+
 // STUDENT LOGIN
 app.get('/studentLogin', (req, res) => {
     res.render('student_login.ejs', { webTitle: "เข้าสู่ระบบ | นักเรียน" });
@@ -142,6 +239,35 @@ app.get('/expense/:mode/:transactionID', getAddExpensePage);
 // STUDENT PROFILE
 app.get('/studentProfile/:mode/:studentID', getEditProfilePage);
 
+// TEACHER LOGIN
+app.get("/teacherLogin", (req, res) => {
+    res.render('teacher_login.ejs', {webTitle: "เข้าสู่ระบบ | อาจารย์"});
+})
+
+// TEACHER INDEX
+app.get('/teacher', getTeacherPage)
+
+// TEACHER INDEX SEARCH
+app.get('/teacher/:query', getTeacherQueryPage);
+
+// TEACHER ADD STUDENT
+app.get('/studentProfile/:mode', getEditProfilePage)
+
+// TEACHER EDIT PROFILE
+app.get('/teacherProfile/:mode/:IDcard', getEditProfilePage2)
+
+// TEACHER STUDENT LISTS
+app.get('/students_list', getStudentsListPage)
+
+// TEACHER ADD SCHOLARSHIP
+app.get('/AddScholarShip/:studentID', getAddScholarshipPage)
+
+// TEACHER STUDENT LISTS WITH QUERY
+app.get('/students_list/:query', getStudentsListQueryPage)
+
+
+
+
 // APP POST
 // All login
 app.post('/home', login);
@@ -166,6 +292,20 @@ app.post('/editExpense/:listID', editExpense);
 
 // STUDENT EDIT PROFILE
 app.post('/editProfile/:studentID', editStudentProfile);
+
+// TEACHER STUDENT SEARCH
+app.post('/searchStudent', searchStudent);
+
+// TEACHER ADD STUDENT
+app.post('/addStudent', addStudent);
+
+// TEACHER EDIT PROFILE
+app.post('/editProfile2/:IDcard', editStudentProfile2);
+
+// TEACHER ADD FUND
+app.post('/addFund/:studentID', addFund);
+
+app.post('/searchStudent2', searchStudent2)
 
 // App listen
 app.listen(port, () => {

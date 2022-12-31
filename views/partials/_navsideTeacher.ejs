@@ -1,0 +1,53 @@
+<div class="nav-side-bar">
+<aside>
+<div class="top">
+                <div class="logo">
+                <span class="material-icons">school</span>
+                    <h2>S<span class="danger">S</span>S</h2>
+                </div>
+                <div class="close" id="close-btn">
+                    <span class="material-icons">close</span>
+                </div>
+            </div>
+            
+            <div class="sidebar">
+                <a href="/teacher" class="nav-link">
+                    <span class="material-icons">grid_view</span>
+                    <h3>หน้าหลัก</h3>
+                </a>
+                <a href="/teacherProfile/edit/<%= account.IDcard%>" class="nav-link ">
+                    <span class="material-icons">person</span>
+                    <h3>โปรไฟล์</h3>
+                </a>
+                <!-- <a  class="nav-link" href="teacher_scholarship.php" >
+                    
+                    <span class="material-icons">pie_chart</span>
+                    <h3>เพิ่มทุน</h3>
+                    
+                </a> -->
+                <a href="/students_list" class="nav-link">
+                    <span class="material-icons">add_circle</span>
+                    <h3>เพิ่มทุน</h3>
+                </a>
+                <a href="/logout" class="nav-link">
+                    <span class="material-icons">logout</span>
+                    <h3>ออกจากระบบ</h3>
+                </a>
+            </div>
+            <!-- <script>
+            const links = document.querySelectorAll('.nav-link');
+    
+                if (links.length) {
+                  links.forEach((link) => {
+                    link.addEventListener('click', (e) => {
+                      links.forEach((link) => {
+                          link.classList.remove('active');
+                      });
+                      e.preventDefault();
+                      link.classList.add('active');
+                    });
+                  });
+                }
+                </script> -->
+</aside>
+</div>

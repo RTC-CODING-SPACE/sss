@@ -4,7 +4,11 @@
         <div class="row">
             <div class="col-md-2">
                 <div class="left">
-                    <%- include('partials/_navsideStudent.ejs')%>
+                    <% if(role == "student"){%>
+                        <%- include('partials/_navsideStudent.ejs')%>
+                    <% } else if (role == "teacher"){ %>
+                        <%- include('partials/_navsideTeacher.ejs')%>
+                    <% } %> 
                 </div>
             </div>
             <div class="col-md-10">
@@ -18,7 +22,7 @@
                                 <h4>ธุรกรรมทั้งหมด</h4>
                             </div>
                             <div class="col-md-9 d-flex justify-content-end">
-                                <form action="/searchTransaction2Date/<%= account.studentID%>" method="post">
+                                <form action="/searchTransaction2Date/<%= student.studentID%>" method="post">
                                     <div class="row">
                                         <div class="col-auto">
                                             <div class="input-group flex-nowrap">

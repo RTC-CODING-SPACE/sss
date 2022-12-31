@@ -1,5 +1,3 @@
-<//?php switch($_SESSION[ 'role']){ case '0': $top_menu=f etch(query( "SELECT name, picture FROM admin WHERE username='$_SESSION[userID]'")); $role='Admin' ; break; case '1': $top_menu=f etch(query(
-    "SELECT name, picture FROM teacher WHERE IDcard='$_SESSION[userID]'")); $role='Teacher' ; break; case '2': $top_menu=f etch(query( "SELECT name, picture FROM student WHERE studentID='$_SESSION[userID]'")); $role='Student' ; break; } ?>
 <div class="right">
     <div class="top">
         <button id="menu-btn">

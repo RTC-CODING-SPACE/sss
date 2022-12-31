@@ -1,4 +1,3 @@
-const puppeteer = require('puppeteer');
 const path = require('path');
 const md5 = require("md5");
 
@@ -9,7 +8,7 @@ getAccountDetail = async(userID, role) => {
             accountDetail = await databaseQuery(`SELECT * FROM admin WHERE username=${userID}`);
             break;
         case 1:
-            accountDetail = await databaseQuery(`SELECT * FROM teacher WHERE IDcard=${userID}`);
+            accountDetail = await databaseQuery(`SELECT * FROM teacher INNER JOIN department ON teacher.departmentID = department.departmentID WHERE IDcard=${userID}`);
             break;
         case 2:
             accountDetail = await databaseQuery(`SELECT * FROM student INNER JOIN department ON student.departmentID = department.departmentID WHERE studentID=${userID}`);
@@ -111,16 +110,18 @@ module.exports = {
 
     getTransactionsPage: async(req, res) => {
         sess = req.session;
+        const account = await getAccountDetail(sess.userID, sess.role);
         const student = await getAccountDetail(req.params.studentID, 2);
         const transactions = await getTransactionDetail(req.params.studentID);
-        res.render("student_transactions.ejs", { webTitle: "ประวัติการใช้จ่าย", account: student, role: "student", transactionsDetail: transactions });
+        res.render("student_transactions.ejs", { webTitle: "ประวัติการใช้จ่าย", account: account, student: student, role: roleIdToRoleName(sess.role), transactionsDetail: transactions });
     },
 
     getTransactionsQueryPage: async(req, res) => {
         sess = req.session;
+        const account = await getAccountDetail(sess.userID, sess.role);
         const student = await getAccountDetail(req.params.studentID, 2);
         const transactions = await getTransactionDetail(req.params.studentID, {month: req.params.month, year: req.params.year});
-        res.render("student_transactions.ejs", { webTitle: "ประวัติการใช้จ่าย", account: student, role: "student", transactionsDetail: transactions, getParams: req.params });
+        res.render("student_transactions.ejs", { webTitle: "ประวัติการใช้จ่าย", account: account, student: student, role: roleIdToRoleName(sess.role), transactionsDetail: transactions });
     },
 
     getAddExpensePage: async(req, res) => {
@@ -176,7 +177,7 @@ module.exports = {
     getEditProfilePage: async(req, res) => {
         sess = req.session;
         if(req.params.mode == "edit"){
-            const account = await getAccountDetail(sess.userID, 2);
+            const account = await getAccountDetail(sess.userID, sess.role);
             const student = await getAccountDetail(req.params.studentID, 2);
             const departments = await databaseQuery("SELECT * FROM department");
 
@@ -186,9 +187,23 @@ module.exports = {
                 delete sess.status;
             } 
 
-            res.render('student_profile.ejs', {webTitle: "โปรไฟล์ | นักเรียน",account:account, student: student,departments: departments, mode: "edit", role: "student", status: statusParams});
+            res.render('student_profile.ejs', {webTitle: "โปรไฟล์ | นักเรียน",account:account, student: student,departments: departments, mode: "edit", role: roleIdToRoleName(sess.role), status: statusParams});
+        }
+
+        if(req.params.mode == "add") {
+            const account = await getAccountDetail(sess.userID, sess.role);
+            const departments = await databaseQuery("SELECT * FROM department");
+
+            statusParams = "";
+            if (typeof sess.status !== "undefined"){
+                statusParams = sess.status;
+                delete sess.status;
+            }
+
+            res.render('student_profile.ejs', {webTitle: "โปรไฟล์ | นักเรียน",account:account,departments: departments, mode: "add", role: roleIdToRoleName(sess.role), status: statusParams});
         }
     },
+
     editStudentProfile: async(req, res) => {
         sess = req.session;
         pictureParams = "";
@@ -204,7 +219,7 @@ module.exports = {
 
         (req.body.password == "") ? passwordParams = "" : passwordParams = `, password = "${md5(req.body.password)}"`;
         
-        await databaseQuery(`UPDATE student SET studentID="${req.body.studentID}", name="${req.body.name}", dob="${req.body.dob}", phone="${req.body.phone}", email="${req.body.email}", address="${req.body.address}", teacherName="${req.body.teacherName}" ${passwordParams} ${pictureParams} WHERE studentID="${req.params.studentID}"`);
+        await databaseQuery(`UPDATE student SET studentID="${req.body.studentID}",password="${req.body.password}", name="${req.body.name}", dob="${req.body.dob}", phone="${req.body.phone}",level="${req.body.level}", departmentID=${req.body.departmentID}, email="${req.body.email}", address="${req.body.address}", teacherName="${req.body.teacherName}" ${passwordParams} ${pictureParams} WHERE studentID="${req.params.studentID}"`);
         sess.status = {status: "success", text: "UPDATED PROFILE SUCCESSFULLY"}
         res.redirect(`/studentProfile/edit/${req.params.studentID}`);
     }

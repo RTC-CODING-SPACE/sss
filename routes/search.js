@@ -16,5 +16,15 @@ module.exports = {
     searchTransactionPrint: async(req, res) => {
         sess = req.session;
         res.redirect(`/studentGraphPrint/${req.params.studentID}/${req.body.month}/${req.body.year}`);
-    }
+    },
+
+    searchStudent: async(req, res) => {
+        sess.req.session
+        res.redirect(`/teacher/${req.body.query}`);
+    },
+
+    searchStudent2: async(req, res) => {
+        sess.req.session
+        res.redirect(`/students_list/${req.body.query}`);
+    },
 }
