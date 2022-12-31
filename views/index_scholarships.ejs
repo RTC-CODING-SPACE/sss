@@ -1,0 +1,56 @@
+<%- include("partials/_header.ejs")%>
+
+    <body>
+        <%- include('partials/_navbar.ejs')%>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-12">
+                        <div class="main">
+                            <main>
+                                <div class="row ">
+                                    <div class="col-md-12 text-center">
+                                        <h4 class="display-4">ทุนการศึกษา</h4>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="base">
+                                        <div class="row">
+                                            <%
+                                        scholarships.forEach(scholarship => {
+                                    %>
+                                                <div class="col-md-4">
+                                                    <div class="scholarship">
+                                                        <div class="mycard shadow-2 ">
+                                                            <div class="card text-left px-5 pt-5 pb-1 base-scholarship " style="height:75vh;background: url('/assets/img/index_scholarship.png');background-size: 70%;background-color:#F6F6FF;background-repeat: no-repeat;background-position:center;">
+                                                                <div class="card-body">
+                                                                    <h1 class="card-title">
+                                                                        <%= scholarship.name %>
+                                                                    </h1>
+                                                                    <br>
+                                                                    <h4 class="card-text">เงินทุน :
+                                                                        <%= new Intl.NumberFormat().format(scholarship.prize) %>
+                                                                            <h4>
+                                                                                <br>
+                                                                                <h5 class="card-text">รายละเอียด</h5>
+                                                                                <p>
+                                                                                    <%= scholarship.detail %>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <% }) %>
+                                        </div>
+                                    </div>
+                                </div>
+                            </main>
+                        </div>
+                    </div>
+                </div>
+                <script src="js/script.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    </body>
+
+    </html>

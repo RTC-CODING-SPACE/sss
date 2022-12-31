@@ -1,0 +1,55 @@
+<nav class="navbar navbar-expand-lg bg-white sticky-top" style="border-radius: 2rem;">
+    <div class="container-fluid">
+        <a class="nav-brand" href="/">
+            <img src="/assets/img/icons/logo.png" class="img-fluid" style="width: 30px;">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navSmallMenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navSmallMenu">
+            <ul class="navbar-nav mx-auto mb-2 mb-lg-0 ">
+                <li class="nav-item">
+                    <a class="nav-link fs-6" style="color:#000;" href="/">หน้าหลัก</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fs-6" style="color:#000;" href="/scholarships">ทุนการศึกษา</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fs-6" style="color:#000;" href="/contact">ติดต่อ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fs-6" style="color:#000;" href="/about">เกี่ยวกับเรา</a>
+                </li>
+            </ul>
+            <div class="d-flex ">
+                <button type="button" style="padding: 1rem 4rem;" class="btn btn-red" data-bs-toggle="modal" data-bs-target="#myModal">
+                    LOGIN
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- The Modal -->
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 2rem;padding:2rem">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">เลือกสถานะการเข้าสู่ระบบ</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body d-flex justify-content-around">
+                <h5>สถานะ </h5>
+                <h2><a class="btn btn-green" style="text-decoration: none;  padding:2rem" href="/studentLogin">นักศึกษา</a> </h2>
+                <h5>สถานะ </h5>
+                <h2><a class="btn btn-yellow" style="text-decoration: none; padding:2rem" href="/teacherLogin">อาจารย์</a></h2>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-red" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

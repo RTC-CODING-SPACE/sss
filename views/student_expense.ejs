@@ -1,0 +1,122 @@
+<%- include("partials/_header.ejs")%>
+ <body>
+     <div class="container-fluid">
+         <div class="row">
+             <div class="col-md-2">
+                 <div class="left">
+                    <%- include('partials/_navsideStudent.ejs')%>
+                 </div>
+             </div>
+             <div class="col-md-10">
+                 <div class="top">
+                    <%- include('partials/_userTop.ejs')%>
+                 </div>
+                 <div class="main">
+                     <main>
+                         <div class="base " style="height: auto;">
+                             <center>
+                                 <div class="col-md-8 topic mt-5 mb-5" style="background-color: #58baab;">
+
+                                     <p class="text-center fs-3  text-white"><%= webTitle%></p>
+                                 </div>
+                                 <% if(typeof status !== "undefined"){ %>
+                                    <p class="fs-5 text-success"><%= status.text %></p>
+                                 <% } %>
+                             </center>
+                             <div class="col-md-12" style="padding: 1rem;">
+                                 <form action="<%= (mode == "add") ? `/addExpense/${account.studentID}`: `/editExpense/${transaction.listID}` %>" method="post" enctype="multipart/form-data">
+                                     <!-- AMOUNT -->
+                                     <div class="col-12">
+                                         <div class="row">
+                                             <div class="col-md-12">
+                                                 <label for="amount" class="form-label fs-6">ระบุจำนวนเงิน</label>
+                                             </div>
+                                             <div class="col-md-6">
+                                                <input
+                                                type="number"
+                                                class="form-control"
+                                                id="amount" name="amount"
+                                                min=1  max = <%= transactionsDetail.balance%>
+                                                value="<%= (typeof transaction !== "undefined") ? transaction.amount: "" %>"
+                                                style="background-color: #f5f5fa;padding:1rem;width:100%;border-radius:1rem"
+                                                required
+                                                >
+                                             </div>
+                                             <div class="col-md-6">
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <br><br>
+                                     <!-- TAG -->
+                                     <div class="col-12">
+                                         <div class="row">
+                                             <div class="col-md-12">
+                                                 <label for="tag" class="form-label fs-6">แท็ก</label>
+                                             </div>
+                                             <div class="col-md-8">
+                                                 <!--<input type="text" class="form-control" id="tag" name="tag" style="background-color: #f5f5fa;padding:1rem;width:100%;border-radius:1rem" required value="<?= isset($expense_detail) ? $expense_detail['tag'] : false; ?>">-->
+                                                  <select class="form-select" name="tag" id="tag" style="background-color: #f5f5fa;padding:1rem;width:100%;border-radius:1rem" required>
+                                                    <option selected disabled value="">เลิอกประเภทการใช้จ่าย</option>
+                                                    <option <%= (typeof transaction !== "undefined") ? ((transaction.tag == "ค่าอาหารและเครื่องดิ่ม") ? "selected": false ) : false; %> value="ค่าอาหารและเครื่องดิ่ม">ค่าอาหารและเครื่องดิ่ม</option>
+                                                    <option <%= (typeof transaction !== "undefined") ? ((transaction.tag == "ค่าที่พัก") ? "selected": false ) : false; %> value="ค่าที่พัก">ค่าที่พัก</option>
+                                                    <option <%= (typeof transaction !== "undefined") ? ((transaction.tag == "ค่าเดินทาง") ? "selected": false ) : false; %> value="ค่าเดินทาง">ค่าเดินทาง</option>
+                                                    <option <%= (typeof transaction !== "undefined") ? ((transaction.tag == "ค่าใช่จ่ายส่วนตัว") ? "selected": false ) : false; %> value="ค่าใช่จ่ายส่วนตัว">ค่าใช่จ่ายส่วนตัว</option>
+                                                </select>
+                                             </div>
+                                             <div class="col-md-4">
+                                             </div>
+                                         </div>
+                                     </div>
+                                    <br><br>
+                                     <!-- detail -->
+                                     <div class="col-12">
+                                         <div class="row">
+                                             <div class="col-md-12">
+                                                 <label for="detail" class="form-label fs-6">รายละเอียด</label>
+                                             </div>
+                                             <div class="col-md-10">
+                                                <input
+                                                type="text"
+                                                class="form-control"
+                                                id="detail" name="detail"
+                                                value="<%= (typeof transaction !== "undefined") ? transaction.detail: "" %>"
+                                                style="background-color: #f5f5fa;padding:1rem;border-radius:1rem"
+                                                >
+                                             </div>
+                                             <div class="col-md-2">
+                                             </div>
+                                         </div>
+                                     </div>
+                                    <br><br>
+                                     <!-- picture -->
+                                     <div class="col-12">
+                                         <div class="row">
+                                             <div class="col-md-12">
+                                                 <label for="detail" class="form-label fs-6">หลักฐานการใช้จ่าย</label>
+                                             </div>
+                                             <div class="col-md-12">
+                                                <input
+                                                type="file"
+                                                class="form-control"
+                                                id="picture" name="picture"
+                                                style="background-color: #f5f5fa;padding:1rem;border-radius:1rem"
+                                                <%= (typeof transaction !== "undefined") ? "" : "required" %>
+                                                >
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <br>
+                                     <br>
+                                     <div class="col-md-12 text-center">
+                                         <button class="btn btn-green  fw-bold " style="width:60%;padding:1rem"><%= webTitle %></button>
+                                     </div>
+                             </form>
+                         </div>
+                 </div>
+                 </main>
+             </div>
+         </div>
+     </div>
+     <script src="js/script.js"></script>
+ </body>
+ </html>

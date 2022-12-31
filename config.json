@@ -1,0 +1,11 @@
+{
+    "server": {
+        "port": 5000
+    },
+    "database": {
+        "host": "Localhost",
+        "username": "root",
+        "password": "",
+        "databaseName": "sss"
+    }
+}

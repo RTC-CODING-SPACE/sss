@@ -1,0 +1,21 @@
+<//?php switch($_SESSION[ 'role']){ case '0': $top_menu=f etch(query( "SELECT name, picture FROM admin WHERE username='$_SESSION[userID]'")); $role='Admin' ; break; case '1': $top_menu=f etch(query(
+    "SELECT name, picture FROM teacher WHERE IDcard='$_SESSION[userID]'")); $role='Teacher' ; break; case '2': $top_menu=f etch(query( "SELECT name, picture FROM student WHERE studentID='$_SESSION[userID]'")); $role='Student' ; break; } ?>
+<div class="right">
+    <div class="top">
+        <button id="menu-btn">
+            <span class="material-icons">menu</span>
+        </button>
+        <!-- <div class="theme-toggler">
+            <span class="material-icons active">light_mode</span>
+            <span class="material-icons">dark_mode</span>
+        </div> -->
+        <div class="profile">
+            <div class="info">
+                <p>Hey, <b><%= account.name%></b></p>
+                <small class="text-muted"><%= role%></small>
+            </div>
+            <div class="profile-photo">
+                <img src="/assets/img/profile/<%= account.picture%>">
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,36 @@
+<div class="nav-side-bar">
+    <aside>
+        <div class="top">
+            <div class="logo">
+                <span class="material-icons">school</span>
+                <h2>S<span class="danger">S</span>S</h2>
+            </div>
+            <div class="close" id="close-btn">
+                <span class="material-icons">close</span>
+            </div>
+        </div>
+        <div class="sidebar">
+            <a class="nav-link" href="/student">
+                <span class="material-icons">grid_view</span>
+                <h3>หน้าหลัก</h3>
+            </a>
+            <a class="nav-link " href="/studentProfile/edit/<%= account.studentID%>">
+                <span class="material-icons">person</span>
+                <h3>โปรไฟล์</h3>
+            </a>
+            <a class="nav-link" href="/studentGraph/<%= account.studentID%>">
+                <span class="material-icons">pie_chart</span>
+                <h3>แผนภูมิ</h3>
+
+            </a>
+            <a class="nav-link" href="/transactions/<%= account.studentID%>">
+                <span class="material-icons">history</span>
+                <h3>ประวัติ</h3>
+            </a>
+            <a class="nav-link" href="./student_index.php?logout">
+                <span class="material-icons">logout</span>
+                <h3>ออกจากระบบ</h3>
+            </a>
+        </div>
+    </aside>
+</div>
