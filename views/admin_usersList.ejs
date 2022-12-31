@@ -1,0 +1,72 @@
+<%- include("partials/_header.ejs")%>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="left">
+                    <%- include('partials/_navsideAdmin.ejs')%>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="top">
+                    <%- include('partials/_userTop.ejs')%>
+                </div>
+                <div class="main">
+                    <main>
+                        <div class="row ">
+                            <div class="col-md-3">
+                                <h4>นักศึกษาทั้งหมด</h4>
+                            </div>
+                            <div class="col-md-9 d-flex justify-content-end">
+                                <form action="/searchUsers2" method="post">
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <input type="text" class="form-control my-form" name="query" id="query" placeholder="ค้นหาชื่อ" value="<%= (typeof query !== "undefined") ? query : ""%>">
+                                        </div>
+                                        <div class="col-auto">
+                                            <button type="submit" class="btn btn-green prl-2">🔍Search</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="base">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ชื่อ</th>
+                                            <th>แผนก</th>
+                                            <th>ตำแหน่ง</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                        <%
+                                            users.forEach(user => {
+                                        %>
+                                        <tr>
+                                            <td><%= user.name %></td>
+                                            <td><%= user.departmentName %></td>
+                                            <td><%= (typeof user.studentID !== "undefined") ? "นักศึกษา" : "อาจารย์" %></td>
+                                            <td align="center">
+                                                <%
+                                                    (typeof user.studentID !== "undefined") ? addAction = `/studentProfile/edit/${user.studentID}` : addAction = `/teacherProfile/edit/${user.IDcard}`;
+                                                    (typeof user.studentID !== "undefined") ? delAction = `/delete/student/${user.studentID}` : delAction = `/delete/teacher/${user.IDcard}`;
+                                                %>
+                                                <a class="none-director btn btn-yellow" href="<%= addAction %>">แก้ไข</a>
+                                                <a class="none-director btn btn-red" href="<%= delAction %>">ลบ</a>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                </table>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>

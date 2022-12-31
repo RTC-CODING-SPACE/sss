@@ -11,7 +11,7 @@ const fileUpload = require('express-fileupload');
 
 // PAGE FUNCTION
 const { getScholarshipsPage } = require('./routes/scholarships');
-const { login } = require('./routes/login');
+const { login, getStudentLoginPage, getTeacherLoginPage } = require('./routes/login');
 const { 
         getStudentHome, 
         getScholarshipPage, 
@@ -40,12 +40,26 @@ const {
         addFund
     } = require('./routes/teacher')
 const {
+        getAdminIndexPage,
+        getAdminIndexQueryPage,
+        addTeacher,
+        deleteUser,
+        getEditProfilePage3,
+        editStudentProfile3,
+        getCreateScholarshipPage,
+        createFund,
+        getUsersListPage,
+        getUsersListQueryPage
+    } = require('./routes/admin')
+const {
         searchScholarships,
         searchTransaction,
         searchTransactionPrint,
         searchTransaction2,
         searchStudent,
-        searchStudent2
+        searchStudent2,
+        searchUser,
+        searchUsers2
     } = require('./routes/search');
 
 
@@ -79,13 +93,13 @@ global.getAccountDetail = async(userID, role) => {
     let accountDetail;
     switch (role) {
         case 0:
-            accountDetail = await databaseQuery(`SELECT * FROM admin WHERE username=${userID}`);
+            accountDetail = await databaseQuery(`SELECT * FROM admin WHERE username="${userID}"`);
             break;
         case 1:
-            accountDetail = await databaseQuery(`SELECT * FROM teacher INNER JOIN department ON teacher.departmentID = department.departmentID WHERE IDcard=${userID}`);
+            accountDetail = await databaseQuery(`SELECT * FROM teacher INNER JOIN department ON teacher.departmentID = department.departmentID WHERE IDcard="${userID}"`);
             break;
         case 2:
-            accountDetail = await databaseQuery(`SELECT * FROM student INNER JOIN department ON student.departmentID = department.departmentID WHERE studentID=${userID}`);
+            accountDetail = await databaseQuery(`SELECT * FROM student INNER JOIN department ON student.departmentID = department.departmentID WHERE studentID="${userID}"`);
             break;
     }
     return accountDetail[0];
@@ -202,9 +216,7 @@ app.get('/logout', (req, res) => {
 })
 
 // STUDENT LOGIN
-app.get('/studentLogin', (req, res) => {
-    res.render('student_login.ejs', { webTitle: "เข้าสู่ระบบ | นักเรียน" });
-})
+app.get('/studentLogin', getStudentLoginPage)
 
 // STUDENT HOME
 app.get('/student', getStudentHome);
@@ -240,9 +252,7 @@ app.get('/expense/:mode/:transactionID', getAddExpensePage);
 app.get('/studentProfile/:mode/:studentID', getEditProfilePage);
 
 // TEACHER LOGIN
-app.get("/teacherLogin", (req, res) => {
-    res.render('teacher_login.ejs', {webTitle: "เข้าสู่ระบบ | อาจารย์"});
-})
+app.get("/teacherLogin", getTeacherLoginPage)
 
 // TEACHER INDEX
 app.get('/teacher', getTeacherPage)
@@ -265,12 +275,31 @@ app.get('/AddScholarShip/:studentID', getAddScholarshipPage)
 // TEACHER STUDENT LISTS WITH QUERY
 app.get('/students_list/:query', getStudentsListQueryPage)
 
+// ADMIN INDEX
+app.get('/admin', getAdminIndexPage)
 
+// ADMIN INDEX WITH QUERY
+app.get('/admin/:query', getAdminIndexQueryPage)
+
+// ADMIN DELETE USER
+app.get('/delete/:role/:userID', deleteUser);
+
+// ADMIN EDIT PROFILE
+app.get('/adminProfile/:mode/:IDcard', getEditProfilePage3)
+
+// ADMIN ADD SCHOLARSHIP PAGE
+app.get('/createScholarship/:mode/:transactionID', getCreateScholarshipPage);
+
+// ADMIN USERS LIST
+app.get('/users_list', getUsersListPage)
+
+// ADMIN USERS LIST
+app.get('/users_list/:query', getUsersListQueryPage)
 
 
 // APP POST
 // All login
-app.post('/home', login);
+app.post('/login/:role', login);
 
 // STUDENT SCHOLARSHIP SEARCH
 app.post('/seachScholarship', searchScholarships);
@@ -305,7 +334,23 @@ app.post('/editProfile2/:IDcard', editStudentProfile2);
 // TEACHER ADD FUND
 app.post('/addFund/:studentID', addFund);
 
+// TEACHRE SEARCH STUDENT
 app.post('/searchStudent2', searchStudent2)
+
+// ADMIN SEARCH USER
+app.post('/searchUsers', searchUser)
+
+// TEACHER ADD STUDENT
+app.post('/addTeacher', addTeacher);
+
+// TEACHER EDIT PROFILE
+app.post('/editProfile3/:username', editStudentProfile3);
+
+// ADMIN CREATE SCHOLARSHiP
+app.post('/createFund', createFund)
+
+// ADMIN SEARCH USER
+app.post('/searchUsers2', searchUsers2)
 
 // App listen
 app.listen(port, () => {

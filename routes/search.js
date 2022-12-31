@@ -27,4 +27,14 @@ module.exports = {
         sess.req.session
         res.redirect(`/students_list/${req.body.query}`);
     },
+
+    searchUser: async(req, res) => {
+        sess.req.session
+        res.redirect(`/admin/${req.body.query}`);
+    },
+
+    searchUsers2: async(req, res) => {
+        sess.req.session
+        res.redirect(`/users_list/${req.body.query}`);
+    }
 }

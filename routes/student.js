@@ -1,60 +1,6 @@
 const path = require('path');
 const md5 = require("md5");
 
-getAccountDetail = async(userID, role) => {
-    let accountDetail;
-    switch (role) {
-        case 0:
-            accountDetail = await databaseQuery(`SELECT * FROM admin WHERE username=${userID}`);
-            break;
-        case 1:
-            accountDetail = await databaseQuery(`SELECT * FROM teacher INNER JOIN department ON teacher.departmentID = department.departmentID WHERE IDcard=${userID}`);
-            break;
-        case 2:
-            accountDetail = await databaseQuery(`SELECT * FROM student INNER JOIN department ON student.departmentID = department.departmentID WHERE studentID=${userID}`);
-            break;
-    }
-    return accountDetail[0];
-}
-
-getTransactionDetail = async(userID, querydate = {}) => {
-    let income_total = 0;
-    let expense_total = 0;
-    let balance = 0;
-
-    queryDateParam = "";
-    if (Object.keys(querydate).length !== 0) {
-        if (querydate.month !== '0') queryDateParam = queryDateParam + ` AND MONTH(date)=${querydate.month}`;
-        if (querydate.year !== '0') queryDateParam = queryDateParam + ` AND YEAR(date)=${querydate.year}`;
-    };
-
-    let incomeLists = await databaseQuery(`SELECT listID, studentID, scholarship.name as detail, tag, amount, type, date FROM scholarshiplists INNER JOIN scholarship ON scholarshiplists.scholarshipID = scholarship.scholarshipID WHERE studentID=${userID} ${queryDateParam}`);
-    let expenseLists = await databaseQuery(`SELECT * FROM expenselists WHERE studentID=${userID} ${queryDateParam}`);
-    let AllLists = [...incomeLists, ...expenseLists];
-
-    AllLists.sort(function(a, b) {
-        return new Date(b.date) - new Date(a.date);
-    })
-
-    incomeLists.forEach(list => {
-        income_total += list.amount;
-    })
-
-    expenseLists.forEach(list => {
-        expense_total += list.amount;
-    })
-
-    balance = income_total - expense_total;
-    if(balance < 0) balance = 0;
-
-    return {
-        balance: balance,
-        income: income_total,
-        expense: expense_total,
-        transactions: AllLists
-    }
-}
-
 getTransactionByID = async(transactionID) => {
     return await databaseQuery(`SELECT * FROM expenselists WHERE listID=${transactionID}`)
 }
@@ -218,8 +164,8 @@ module.exports = {
         }
 
         (req.body.password == "") ? passwordParams = "" : passwordParams = `, password = "${md5(req.body.password)}"`;
-        
-        await databaseQuery(`UPDATE student SET studentID="${req.body.studentID}",password="${req.body.password}", name="${req.body.name}", dob="${req.body.dob}", phone="${req.body.phone}",level="${req.body.level}", departmentID=${req.body.departmentID}, email="${req.body.email}", address="${req.body.address}", teacherName="${req.body.teacherName}" ${passwordParams} ${pictureParams} WHERE studentID="${req.params.studentID}"`);
+
+        await databaseQuery(`UPDATE student SET studentID="${req.body.studentID}", name="${req.body.name}", dob="${req.body.dob}", phone="${req.body.phone}",level="${req.body.level}", departmentID=${req.body.departmentID}, email="${req.body.email}", address="${req.body.address}", teacherName="${req.body.teacherName}", gender="${req.body.gender}" ${passwordParams} ${pictureParams} WHERE studentID="${req.params.studentID}"`);
         sess.status = {status: "success", text: "UPDATED PROFILE SUCCESSFULLY"}
         res.redirect(`/studentProfile/edit/${req.params.studentID}`);
     }

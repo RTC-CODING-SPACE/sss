@@ -24,7 +24,7 @@
                         <h1 class="fs-1 fw-bold text-center">LOGIN</h1>
                     </div>
                             <!-- FORM -->
-                            <form action="/home" method="POST">
+                            <form action="/login/teacher" method="POST">
                                 <!-- ID CARD NO. -->
                                 <div class="col-md-11">
                                     <label for="studentID" class="form-label fs-3">ID CARD NO.</label>
@@ -35,19 +35,12 @@
                                 <div class="col-md-11">
                                     <label for="password" class="form-label fs-3">PASSWORD</label>
                                     <input type="password" class="form-control" id="password" name="password" style="background-color: #c8e8e3;padding:1rem;border:none;border-radius:1rem">
-                                    <?php
-
-                                        if(isset($_SESSION['error'])){
-
-                                    ?>
-
-                                    <span class="text-danger"><?= $_SESSION['error']?></span>
-
-                                    <?php
-
-                                        unset($_SESSION['error']);}
-
-                                    ?>
+                                    <%
+                                        if(typeof status !== ""){
+                                            (status.status == "success") ? color = "green" : color = "red";
+                                    %>
+                                        <span class="text-<%= color %>"><%= status.text %></span>
+                                    <% } %>
                                 </div>
                                 <br>
                                 <br>

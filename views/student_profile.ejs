@@ -8,6 +8,8 @@
                         <%- include('partials/_navsideStudent.ejs')%>
                     <% } else if (role == "teacher"){ %>
                         <%- include('partials/_navsideTeacher.ejs')%>
+                    <% } else if(role == "admin"){%>
+                        <%- include('partials/_navsideAdmin.ejs')%>
                     <% } %> 
                 </div>
             </div>
@@ -92,7 +94,8 @@
                                                         let dob = "";
                                                         if(mode == "edit"){
                                                             const dobDay = new Date(`${student.dob}`);
-                                                            dob = `${dobDay.getFullYear()}-${(dobDay.getMonth()+1 < 10) ? "0" + dobDay.getMonth()+1 : dobDay.getMonth()+1}-${(dobDay.getDate() < 10) ? "0" + dobDay.getDate() : dobDay.getDate()}`;
+                                                            dob = `${dobDay.getFullYear()}-${(dobDay.getMonth()+1 < 10) ? "0" + (dobDay.getMonth()+1) : dobDay.getMonth()+1}-${(dobDay.getDate() < 10) ? "0" + dobDay.getDate() : dobDay.getDate()}`;
+                                                            console.log(dob)
                                                         }
                                                     %>
                                                     value="<%= dob %>"

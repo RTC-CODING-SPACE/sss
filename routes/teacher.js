@@ -53,9 +53,9 @@ module.exports = {
         }
         req.body.password = md5(req.body.password)
 
-        await databaseQuery(`INSERT INTO student SET studentID="${req.body.studentID}",password="${req.body.password}", name="${req.body.name}", dob="${req.body.dob}", phone="${req.body.phone}",level="${req.body.level}", departmentID=${req.body.departmentID}, email="${req.body.email}", address="${req.body.address}", teacherName="${req.body.teacherName}" ${pictureParams}`);
+        await databaseQuery(`INSERT INTO student SET studentID="${req.body.studentID}",password="${req.body.password}", name="${req.body.name}", dob="${req.body.dob}", phone="${req.body.phone}",level="${req.body.level}", departmentID=${req.body.departmentID}, email="${req.body.email}", address="${req.body.address}", gender="${req.body.gender}", teacherName="${req.body.teacherName}" ${pictureParams}`);
         sess.status = {status: "success", text: "ADDED NEW STUDENT TO SYSTEM."}
-        res.redirect('/studentProfile/add');
+        res.redirect('/studentProfile/add/0');
     },
 
     getEditProfilePage2: async(req, res) => {
@@ -104,7 +104,7 @@ module.exports = {
 
         (req.body.password == "") ? passwordParams = "" : passwordParams = `, password = "${md5(req.body.password)}"`;
 
-        await databaseQuery(`UPDATE teacher SET IDcard="${req.body.IDcard}", name="${req.body.name}", dob="${req.body.dob}", phone="${req.body.phone}", email="${req.body.email}", address="${req.body.address}", departmentID=${req.body.departmentID} ${passwordParams} ${pictureParams} WHERE IDcard="${req.params.IDcard}"`);
+        await databaseQuery(`UPDATE teacher SET IDcard="${req.body.IDcard}", name="${req.body.name}", dob="${req.body.dob}", phone="${req.body.phone}", email="${req.body.email}", address="${req.body.address}", departmentID=${req.body.departmentID}, gender="${req.body.gender}" ${passwordParams} ${pictureParams} WHERE IDcard="${req.params.IDcard}"`);
         sess.status = {status: "success", text: "UPDATED PROFILE SUCCESSFULLY"}
         res.redirect(`/teacherProfile/edit/${req.params.IDcard}`);
     },

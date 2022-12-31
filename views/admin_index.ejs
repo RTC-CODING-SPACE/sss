@@ -1,0 +1,74 @@
+<%- include("partials/_header.ejs")%>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="left">
+                    <%- include('partials/_navsideAdmin.ejs')%>
+                </div>
+            </div>
+            <div class="col-md-10" >
+                <div class="top">
+                    <%- include('partials/_userTop.ejs')%>
+                </div>
+                <div class="main">
+                    <main>
+                        <div class="row ">
+                            <div class="col-md-3">
+                                <h4>จัดการผู้ใช้</h4>
+                            </div>
+                            <div class="col-md-9 ">
+                                <form action="/searchUsers" method="POST">
+                                    <div class="row mx-auto">
+                                        <div class="col-7">
+                                            <input type="text" class="form-control my-form" name="query" id="query" placeholder="ค้นหาชื่อ" value="<%= (typeof query !== "undefined") ? query : ""%>">
+                                        </div>
+                                        <div class="col-auto">
+                                            <button type="submit" class="btn btn-green prl-2">🔍Search</button>
+                                            <a class="none-director btn btn-green" href="/teacherProfile/add/0"> + เพิ่มอาจารย์</a>
+                                            <a class="none-director btn btn-green" href="/studentProfile/add/0"> + เพิ่มนักศึกษา</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="base">
+                                <div class="row">
+                                    <%
+                                        users.forEach(user => {
+                                    %>
+                                    <div class="col-md-3">
+                                        <div class="mycard shadow">
+                                            <div class="card text-center">
+                                                <center style="margin: 1rem;">
+                                                    <img src="/assets/img/profile/<%= user.picture %>" class="rounded-circle" width="300px" height= "300px" style="object-fit:cover;" alt="...">
+                                                </center>
+                                                <div class="card-body">
+                                                    <h3 class="card-title"><%= user.name %></h3>
+                                                    <p class="card-text">สถานะ </p>
+                                                    <h4 class="card-text"><%= (typeof user.studentID !== "undefined") ? "นักศึกษา" : "อาจารย์" %></h4>
+                                                    <br>
+                                                    <%
+                                                        (typeof user.studentID !== "undefined") ? addAction = `/studentProfile/edit/${user.studentID}` : addAction = `/teacherProfile/edit/${user.IDcard}`;
+                                                        (typeof user.studentID !== "undefined") ? delAction = `/delete/student/${user.studentID}` : delAction = `/delete/teacher/${user.IDcard}`;
+                                                    %>
+                                                    <a class="none-director btn btn-yellow" href="<%= addAction %>">แก้ไข</a>
+                                                    <a class="none-director btn btn-red" href="<%= delAction %>">ลบ</a><br><br>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <% }) %>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>
