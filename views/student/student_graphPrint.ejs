@@ -1,0 +1,132 @@
+<%- include("../partials/_header.ejs")%>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                        <main>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="base">
+                                            <div class="row">
+                                                <div class="col-auto">
+                                                    <p> <span class=" dot-green badge  rounded-circle">&nbsp;</span> &nbsp; รายรับทั้งหมด</p>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <p> <span class=" dot-red badge  rounded-circle">&nbsp;</span> &nbsp; รายจ่ายทั้งหมด</p>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <p> <span class=" dot-yellow badge  rounded-circle">&nbsp;</span> &nbsp; ยอดคงเหลือ</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 chart-pie">
+                                                <div id="myChart" class="chart-pie" style="width: 100%;"></div>
+                                            </div>
+                                            <div id="chart-data" data-income=<%=transactionsDetail.income %> data-expense=<%= transactionsDetail.expense %> data-balance=<%= transactionsDetail.balance %>></div>
+                                            <script>
+                                                google.charts.load('current', {
+                                                    'packages': ['corechart']
+                                                });
+                                                google.charts.setOnLoadCallback(drawChart);
+                                                const chartData = document.getElementById('chart-data');
+                                                const income = Number(chartData.dataset.income);
+                                                const expense = Number(chartData.dataset.expense);
+                                                const balance = Number(chartData.dataset.balance);
+
+                                                function drawChart() {
+                                                    var data = google.visualization.arrayToDataTable([
+                                                        ['Contry', 'Mhl'],
+                                                        ['รายรับ', income],
+                                                        ['รายจ่าย', expense],
+                                                        ['คงเหลือ', balance],
+                                                    ]);
+                                                    var options = {
+                                                        title: 'แสดง รายรับ รายจ่าย',
+                                                        colors: ['#58BAAB', '#F86B58', '#F4C439'],
+                                                        is3D: true,
+                                                        legend: 'none'
+                                                    };
+                                                    var chart = new google.visualization.PieChart(document.getElementById('myChart'));
+                                                    chart.draw(data, options);
+                                                }
+                                            </script>
+                                        </div>
+                                        <div class="col-md-auto">
+                                            <h4>สรุป</h4>
+                                        </div>
+                                        <div class="col-md-auto">
+                                            <div class="base d-flex justify-content-between align-items-center">
+                                                รายรับทั้งหมด
+                                                <span class="money-md"><%= new Intl.NumberFormat().format(transactionsDetail.income) %></span>
+                                                <span class=" dot-green badge  rounded-circle">&nbsp;</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-auto">
+                                            <div class="base d-flex justify-content-between align-items-center">
+                                                รายจ่ายทั้งหมด
+                                                <span class="money-md"><%= new Intl.NumberFormat().format(transactionsDetail.expense) %></span>
+                                                <span class=" dot-red badge  rounded-circle"> &nbsp;</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-auto">
+                                            <div class="base d-flex justify-content-between align-items-center">
+                                                ยอดคงเหลือ
+                                                <span class="money-md"><%= new Intl.NumberFormat().format(transactionsDetail.balance) %></span>
+                                                <span class=" dot-yellow badge  rounded-circle"> &nbsp;</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row d-flex justify-content-between">
+                                            <div class="col-md-auto">
+                                                <h4>ธุรกรรมทั้งหมด</h4>
+                                            </div>
+                                            <div class="col-md-auto ">
+                                                <div class="row">
+                                                    <div class="col-auto">
+                                                        <form action="/searchTransactionDate/<%= account.studentID%>" method="post">
+                                                            <div class="input-group flex-nowrap">
+                                                    </form>
+                                                    <form action="/graphPrint/<%= account.studentID%>" method="post" target="_blank">
+                                                    </form>
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </div>
+                                        <div class="base">
+                                            <table class="table table-hover ">
+                                                <thead>
+                                                    <tr>
+                                                        <th>จำนวนเงิน (THB)</th>
+                                                        <th>แท็ก</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <% 
+                                                    transactionsDetail.transactions.forEach(list => { 
+                                                        var color = "green";
+                                                        if(list.type == "-") color = "red";
+                                                %>
+                                                    <tr>
+                                                        <td><%= list.type %> <%= new Intl.NumberFormat().format(list.amount) %></td>
+                                                        <td>#<%= list.tag %></td>
+                                                        <td><span class=" dot-<%= color %> badge  rounded-circle">&nbsp;</span></td>
+                                                    </tr>
+                                                <% }) %>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </main>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="js/script.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script>window.print()</script>
+    </body>
+</html>

@@ -1,0 +1,192 @@
+<%- include("../partials/_header.ejs")%>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="left">
+                    <% if(role == "teacher"){%>
+                        <%- include('../partials/_navsideTeacher.ejs')%>
+                    <% } else if (role == "admin"){ %>
+                        <%- include('../partials/_navsideAdmin.ejs')%>
+                    <% } %> 
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="top">
+                    <%- include('../partials/_userTop.ejs')%>
+                </div>
+                <div class="main">
+                    <main>
+                        <div class="base" style="padding:4rem 2rem;">
+                            <div class="row ">
+                                <div class="col-md-8">
+                                    <p class="fw-bold fs-1 text-center"><%= webTitle %></p>
+                                    <%
+                                        if(typeof status !== ""){
+                                            (status.status == "success") ? color = "green" : color = "red";
+                                    %>
+                                        <p class="text-center my-0 text-<%= color %>"><%= status.text %></p>
+                                    <% } %>
+                                </div>
+                                <div class="col-md-4 d-none d-md-block d-lg-block d-xl-block">
+                                    <p class="fw-bold fs-1 " style="color:#58baab;">TEACHER</p>
+                                </div>
+                                <div class="col-12">
+                                    <form action="<%= (mode == "edit") ? `/edit/profile/?IDcard=${target.IDcard}`: "/add/profile/?role=teacher"%>" method="POST" enctype="multipart/form-data">
+                                        <div class="row d-flex justify-content-around">
+                                            <!-- PICTURE -->
+                                            <div class="col-md-2 ">
+                                                <center>
+                                                    <img src="/assets/img/profile/<%= (mode == "edit") ? target.picture:"teacher_default.png"; %>" class="rounded-circle"  alt="" style="width: 150px;height: 150px;background-color: #58baab;">
+                                                    <input type="file" name="picture" id="picture" class="form-control form-control-sm">
+                                                </center>
+                                            </div>
+                                            <!-- StudentID -->
+                                            <div class="col-md-4">
+                                                <div class="mb-3 pt-md-5">
+                                                    <label for="name" class="form-label fs-5 fw-bold">ID CARD</label>
+                                                    <input
+                                                    type="name"
+                                                    class="form-control"
+                                                    id="IDcard" name="IDcard"
+                                                    maxlength="13" minlength="13"
+                                                    value="<%= (mode == "edit") ? target.IDcard : "" %>" <%= (role == "teacher") ? "readonly": ""%>
+                                                    required
+                                                    style="background-color: #e6f3f3;"
+                                                    >
+                                                </div>
+                                            </div>
+                                            <!-- Password -->
+                                            <div class="col-md-4">
+                                                <div class="mb-3 pt-md-5">
+                                                    <label for="password" class="form-label fs-5 fw-bold">PASSWORD</label>
+                                                    <input type="text" class="form-control" id="password" name="password" style="background-color: #e6f3f3;" maxlength="30" minlength="6">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row px-md-4 d-flex justify-content-center">
+                                            <p class="mt-2 fw-bold">ข้อมูลส่วนบุคคล</p>
+                                            <!-- Name -->
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="name" class="form-label fs-6 ">ชื่อ :</label>
+                                                    <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="name" name="name"
+                                                    value="<%= (mode == "edit") ? target.name : "" %>"
+                                                    required
+                                                    style="background-color: #f6f6ff;"
+                                                    >
+                                                </div>
+                                            </div>
+                                            <!-- DOB -->
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="dob" class="form-label fs-6 ">วัน-เดือน-ปีเกิด :</label>
+                                                    <input
+                                                    type="date"
+                                                    class="form-control"
+                                                    id="dob" name="dob"
+                                                    <% 
+                                                        let dob = "";
+                                                        if(mode == "edit"){
+                                                            const dobDay = new Date(`${target.dob}`);
+                                                            dob = `${dobDay.getFullYear()}-${(dobDay.getMonth()+1 < 10) ? "0" + (dobDay.getMonth()+1) : dobDay.getMonth()+1}-${(dobDay.getDate() < 10) ? "0" + dobDay.getDate() : dobDay.getDate()}`;
+                                                        }
+                                                    %>
+                                                    value="<%= dob %>"
+                                                    required
+                                                    style="background-color: #f6f6ff;"
+                                                    >
+                                                </div>
+                                            </div>
+                                            <!-- Gender -->
+                                            <div class="col-md-3">
+                                                <div class="mb-3">
+                                                    <label for="password" class="form-label fs-6 ">เพศ :</label>
+                                                    <select class="form-select" name="gender" id="gender" style="background-color: #f6f6ff;" required>
+                                                        <option selected disabled>-- เลือกเพศ --</option>
+                                                        <option <%= (mode == "edit") ? ((target.gender == "male") ? "selected" : "") : ""%> value="male">ชาย</option>
+                                                        <option <%= (mode == "edit") ? ((target.gender == "female") ? "selected" : "") : ""%> value="female">หญิง</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row px-md-4 d-flex justify-content-center">
+                                            <p class="mt-2 fw-bold">ข้อมูลการติดต่อ</p>
+                                            <div class="col-md-4">
+                                                <!-- phone -->
+                                                <div class="mb-2">
+                                                    <label for="phone" class="form-label fs-6 ">เบอร์โทร :</label>
+                                                    <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="phone" name="phone"
+                                                    value="<%= (mode == "edit") ? target.phone : "" %>"
+                                                    maxlength="10" minlength="10"
+                                                    required
+                                                    style="background-color: #f6f6ff;"
+                                                    >
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="email" class="form-label fs-6 ">อีเมล :</label>
+                                                    <input
+                                                    type="email"
+                                                    class="form-control"
+                                                    id="email" name="email"
+                                                    value="<%= (mode == "edit") ? target.email : "" %>"
+                                                    maxlength="50"
+                                                    required
+                                                    style="background-color: #f6f6ff;"
+                                                    >
+                                                </div>
+                                            </div>
+                                            <!-- Adress -->
+                                            <div class="col-md-7">
+                                                <div class="mb-3">
+                                                    <label for="address" class="form-label fs-6 ">ที่อยู่ :</label>
+                                                    <textarea
+                                                    class="form-control"
+                                                    id="address" name="address"
+                                                    address rows="4"
+                                                    style="background-color: #f6f6ff;resize:none;"><%= (mode == "edit") ? target.address : "" %></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row px-md-4 d-flex justify-content-center">
+                                            <p class="mt-2 fw-bold">ข้อมูลการสอน</p>
+                                            <!-- departmentID -->
+                                            <div class="col-md-5">
+                                                <div class="mb-3">
+                                                    <label for="departmentID" class="form-label fs-6 ">แผนก :</label>
+                                                    <select class="form-select" name="departmentID" id="departmentID" style="background-color: #f6f6ff;" required>
+                                                        <option selected disabled>-- เลือกแผนก --</option>
+                                                        <%
+                                                        departments.forEach(department => {
+                                                        %>
+                                                            <option <%= (mode == "edit")?((department.departmentID == target.departmentID) ? "selected" : "") : ""%> value="<%= department.departmentID%>"><%= department.departmentName%></option>  
+                                                        <% }) %>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <center>
+                                            <div class="col-md-5">
+                                                <button class="btn btn-green  px-5" style="width:100%;padding:1rem 1rem"><%= (mode == "edit") ? "แก้ไขข้อมูล": "เพิ่มอาจารย์"%></button>
+                                            </div>
+                                        </center>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
+        <script src="js/script.js"></script>
+</body>
+</html>
