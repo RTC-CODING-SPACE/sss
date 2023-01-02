@@ -3,8 +3,8 @@ const {databaseQuery, getAccountDetail, getTransactionDetail} = require('./datab
 test_data = { "id": 1, "name": 'pat', "surname": 'tk' }
 
 test = async() => {
-    const students = await insertDB("test", test_data);
-    console.log(students.affectedRows)
+    const students = await getActivities("63209010016");
+    console.log(students)
     return 0;
 }
 

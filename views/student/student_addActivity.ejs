@@ -1,0 +1,167 @@
+<%- include("../partials/_header.ejs")%>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="left">
+                    <%- include('../partials/_navsideStudent.ejs')%>
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div class="top">
+                    <%- include('../partials/_userTop.ejs')%>
+                </div>
+                <div class="main">
+                    <main>
+                        <div class="col-md-12">
+                            <form action="<%= (mode == "edit") ? `/edit/activity/?activityID=${activity.activityID}` : "/add/activity/" %>" method="POST" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-xl-6">
+                                        <div class="row d-flex justify-content-between">
+                                            <div class="col-xl-auto">
+                                                <h4>ข้อมูลกิจกรรม</h4>
+                                                <% if(typeof status !== ""){ %>
+                                                    <p class="fs-5 text-success"><%= status.text %></p>
+                                                 <% } %>
+                                            </div>
+                                        </div>
+                                        <div class="base">
+                                            <div class="row px-md-4 d-flex justify-content-center">
+                                                <!-- PROJECT -->
+                                                <div class="mb-2">
+                                                    <label for="activityName" class="form-label fs-6 ">ชื่อโครงการ :</label>
+                                                    <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="activityName" name="activityName"
+                                                    style="background-color: #f6f6ff;"
+                                                    value="<%= (mode == 'edit') ? activity.activityName : ""%>"
+                                                    required
+                                                    >
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="address" class="form-label fs-6 ">สถานที่ :</label>
+                                                    <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="address" name="address"
+                                                    style="background-color: #f6f6ff;"
+                                                    value="<%= (mode == 'edit') ? activity.address : ""%>"
+                                                    required
+                                                    >
+                                                </div>
+                                                <!-- Detail-->
+                                                <div class="mb-3">
+                                                    <label for="detail" class="form-label fs-6 ">รายละเอียด :</label>
+                                                    <textarea
+                                                    class="form-control"
+                                                    id="detail" name="detail"
+                                                    rows="4" style="background-color: #f6f6ff;resize:none;"
+                                                    required
+                                                    ><%= (mode == 'edit') ? activity.detail : ""%></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row d-flex justify-content-between">
+                                            <div class="col-xl-auto">
+                                                <h4>วันและเวลาจัดกิจกรรม</h4>
+                                            </div>
+                                        </div>
+                                        <div class="base">
+                                            <div class="row px-md-4 d-flex justify-content-center">
+                                                <!-- DATE -->
+                                                <div class="mb-2">
+                                                    <label for="date" class="form-label fs-6 ">วันที่ :</label>
+                                                    <input
+                                                    type="date"
+                                                    class="form-control"
+                                                    id="date" name="date"
+                                                    style="background-color: #f6f6ff;"
+                                                    <% 
+                                                        let activityDayFormat = "";
+                                                        if(mode == "edit"){
+                                                            const activityDay = new Date(`${activity.date}`);
+                                                            activityDayFormat = `${activityDay.getFullYear()}-${(activityDay.getMonth()+1 < 10) ? "0" + (activityDay.getMonth()+1) : activityDay.getMonth()+1}-${(activityDay.getDate() < 10) ? "0" + activityDay.getDate() : activityDay.getDate()}`;
+                                                        }
+                                                    %>
+                                                    value="<%= activityDayFormat %>"
+                                                    required
+                                                    >
+                                                </div>
+                                                <div class="mb-3" >
+                                                    <label for="startHour" class="form-label fs-6 ">เวลาเริ่มกิจกรรม :</label>
+                                                    <input
+                                                    type="time"
+                                                    class="form-control"
+                                                    id="startHour" name="startHour"
+                                                    style="background-color: #f6f6ff;"
+                                                    value="<%= (mode == 'edit') ? activity.startHour : ""%>"
+                                                    required
+                                                    >
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="project_end" class="form-label fs-6 ">เวลาสิ้นสุดกิจกรรม :</label>
+                                                    <input
+                                                    type="time"
+                                                    class="form-control"
+                                                    id="endHour" name="endHour"
+                                                    style="background-color: #f6f6ff;"
+                                                    value="<%= (mode == 'edit') ? activity.endHour : ""%>"
+                                                    required
+                                                    >
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Image Project -->
+                                    <div class="col-xl-6">
+                                        <div class="row d-flex justify-content-between">
+                                            <div class="col-xl-auto">
+                                                <h4>ภาพกิจกรรม</h4>
+                                            </div>
+                                        </div>
+                                        <div class="base">
+                                            <div class="center">
+                                                <div class="form-input" align ="center">
+                                                    <div class="preview">
+                                                        <img id="file-ip-1-preview">
+                                                    </div>
+                                                    <a class="btn btn-green" id="addPicture">Upload Image</a>
+                                                    <input type="file" id="picture" name="picture" accept="image/*">
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        
+                                    </div>
+                                   <center>
+                                   <button class="btn btn-green  px-5" style="width:50%;padding:1rem 1rem"><%= (mode == 'edit') ? "แก้ไขกิจกรรม" : "เพิ่มกิจกรรม"%></button>
+                                   </center>
+                            </form>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script type="text/javascript">
+        var picture = document.getElementById("picture");
+        var preview = document.getElementById("file-ip-1-preview");
+
+        document.getElementById("addPicture").addEventListener('click', function() {
+            picture.click()
+        })
+
+        picture.onchange = function(event) {
+            if (event.target.files.length !== 0) {
+                var src = URL.createObjectURL(event.target.files[0]);
+                var preview = document.getElementById("file-ip-1-preview");
+                preview.src = src;
+                preview.style.display = "block";
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>

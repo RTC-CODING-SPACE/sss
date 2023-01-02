@@ -37,10 +37,10 @@ app.use(fileUpload({
 }));
 
 // ROUTERS HOMEPAGE
-const { indexPage, indexScholarshipsPage, indexContactPage, indexAboutPage, indexLoginPage } = require('./routes/homepage');
+const { indexPage, indexScholarshipsPage, indexContactPage, indexAboutPage, indexLoginPage, indexApplicationPage } = require('./routes/homepage');
 const { login, logout } = require('./routes/authen');
 const { profilePage } = require('./routes/profile');
-const { studentIndexPage, studentScholarshipPage, studentGraphPage, studentTransactionsPage, studentExpensePage } = require('./routes/student');
+const { studentIndexPage, studentScholarshipPage, studentGraphPage, studentTransactionsPage, studentExpensePage, studentActivitiesPage, studentActivityPage, studentAchievementsPage, studentAchievementPage } = require('./routes/student');
 const { teacherIndexPage, teacherStudentsListPage, teacherScholarshipPage } = require('./routes/teacher')
 const { adminIndexPage, adminCreateScholarshipPage, adminUsersListPage } = require('./routes/admin')
 const { searchScholarships, searchTransaction, searchStudent, searchUser } = require('./routes/search');
@@ -59,6 +59,7 @@ app.get('/', indexPage); // INDEX MAIN
 app.get('/scholarships', indexScholarshipsPage); // INDEX SCHOLARSHIP
 app.get('/contact', indexContactPage); // INDEX CONTACT
 app.get('/about', indexAboutPage); // INDEX ABOUT
+app.get('/scholarships/application', indexApplicationPage)
 app.route('/login/:role') 
     .get(indexLoginPage) // LOGIN PAGE
     .post(login); // LOGGED IN
@@ -69,12 +70,16 @@ app.get('/studentScholarship', studentScholarshipPage); // STUDENT SCHOLARSHIP
 app.get('/studentGraph/:studentID', studentGraphPage); // STUDENT GRAPH
 app.get('/transactions/:studentID', studentTransactionsPage); // STUDENT TRANSACTIONS
 app.get('/expense/:transactionID', studentExpensePage); // STUDENT EXPENSE PAGE
-app.get('/profile/:role/:userID', profilePage) // ALL PROFILE PAGE
+app.get('/activities/:studentID', studentActivitiesPage) // STUDENT ACTIVITIES PAGE
+app.get('/activity/:activityID', studentActivityPage) // STUDENT ACTIVITY PAGE
+app.get('/achievements/:studentID', studentAchievementsPage) // STUDENT ACHIEVEMENTS PAGE
+app.get('/achievement/:achievementID', studentAchievementPage) // STUDENT ACHIEVEMENT PAGE
 
 app.post('/seachScholarship', searchScholarships); // STUDENT SCHOLARSHIP SEARCH
 app.post('/searchTransactionDate/:page/:studentID', searchTransaction); // STUDENT TRANSACTIONS SEARCH
 
 // ALL USER PAGES
+app.get('/profile/:role/:userID', profilePage) // ALL PROFILE PAGE
 app.post('/add/:dataType', addData); // ALL ADD DATA
 app.post('/edit/:dataType', editData); // ALL EDIT DATA
 app.route('/delete/:dataType') // ALL DELETE DATA

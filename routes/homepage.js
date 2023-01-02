@@ -33,4 +33,19 @@ module.exports = {
         if (req.params.role == "student") res.render('index/student_login.ejs', { webTitle: "เข้าสู่ระบบ | นักเรียน", status: statusParams });
         if (req.params.role == "teacher") res.render('index/teacher_login.ejs', { webTitle: "เข้าสู่ระบบ | อาจารย์", status: statusParams });
     },
+
+    indexApplicationPage: async(req, res) => {
+        sess = req.session;
+
+        const departments = await databaseQuery("SELECT * FROM department");
+        const scholarships = await databaseQuery("SELECT * FROM scholarship")
+
+        statusParams = "";
+        if (typeof sess.status !== "undefined"){
+            statusParams = sess.status;
+            delete sess.status;
+        };
+
+        res.render('index/index_application', {webTitle: "สมัครขอทุนการศึกษา", departments: departments,scholarships: scholarships,step: req.query.step, status: statusParams })
+    }
 }

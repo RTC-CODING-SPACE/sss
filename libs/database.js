@@ -2,6 +2,7 @@ const path = require('path');
 const md5 = require('md5');
 const mysql = require('mysql');
 const config = require(path.join(__dirname, '..','/config.json'))
+require('./utility');
 
 // CONNECT MYSQL
 const db = mysql.createConnection({
@@ -163,15 +164,80 @@ const getTeachersByName = async(name) => {
     return await databaseQuery(`SELECT * FROM teacher INNER JOIN department ON teacher.departmentID = department.departmentID WHERE name like '${name}%'`)
 }
 
+// GET STUDENT ACTIVITES
+const getActivities = async(userID, querydate = {}) => {
+    let hours = 0;
+
+    queryDateParam = "";
+    if (Object.keys(querydate).length !== 0) {
+        if (querydate.month !== '0' && typeof querydate.month !== "undefined") queryDateParam = queryDateParam + ` AND MONTH(date)=${querydate.month}`;
+        if (querydate.year !== '0' && typeof querydate.year  !== "undefined") queryDateParam = queryDateParam + ` AND YEAR(date)=${querydate.year}`;
+    };
+
+    const activities = await databaseQuery(`SELECT * FROM activity WHERE studentID="${userID}" ${queryDateParam}`)
+
+    activities.forEach(activity => {
+        let totalTime = timeSubtract(activity.startHour, activity.endHour);
+        hours += totalTime;
+    })
+
+
+    return {
+        total: activities.length,
+        TotalTime: timeFormatFromSec(hours),
+        activities: activities
+    }
+}
+
+// GET STUDENT ACTIVITY BY ID
+const getActivityByID = async(activityID) => {
+    cmd = "SELECT * FROM activity WHERE activityID= ?"
+    const activity = await databaseQuery(cmd, [activityID]);
+    return activity[0];
+}
+const getAchievements = async(userID, querydate = {}) => {
+    queryDateParam = "";
+    if (Object.keys(querydate).length !== 0) {
+        if (querydate.month !== '0' && typeof querydate.month !== "undefined") queryDateParam = queryDateParam + ` AND MONTH(date)=${querydate.month}`;
+        if (querydate.year !== '0' && typeof querydate.year  !== "undefined") queryDateParam = queryDateParam + ` AND YEAR(date)=${querydate.year}`;
+    };
+
+    const achievements = await databaseQuery(`SELECT * FROM achievement WHERE studentID="${userID}" ${queryDateParam}`)
+
+    return {
+        total: achievements.length,
+        achievements: achievements
+    }
+}
+
+// GET STUDENT ACTIVITY BY ID
+const getAchievementByID = async(activityID) => {
+    cmd = "SELECT * FROM achievement WHERE achievementID= ?"
+    const achievement = await databaseQuery(cmd, [activityID]);
+    return achievement[0];
+}
+
 global.db = db;
-global.databaseQuery = databaseQuery
+
+// all user tool
 global.login = login
 global.getAccountDetail = getAccountDetail
-global.getTransactionDetail = getTransactionDetail
-global.getScholarships = getScholarships
+
+// data manage
+global.databaseQuery = databaseQuery
 global.insertDB = insertDB
 global.updateDB = updateDB
 global.deleteDB = deleteDB
+
+// student tool
+global.getTransactionDetail = getTransactionDetail
+global.getScholarships = getScholarships
+global.getActivities = getActivities
+global.getActivityByID = getActivityByID
+global.getAchievements = getAchievements
+global.getAchievementByID = getAchievementByID
+
+// teacher & admin tool
 global.getStudentsByName = getStudentsByName
 global.getTeachersByName = getTeachersByName
 

@@ -66,4 +66,66 @@ module.exports = {
             res.render("student/student_expense.ejs", { webTitle: "แก้ไขค่าใช้จ่าย", account: student, role: "student", mode: "edit", transactionsDetail: transactions, transaction: transaction[0], status: statusParams});
         }
     },
+
+    studentActivitiesPage: async(req, res) => {
+        sess = req.session;
+
+        const student = await getAccountDetail(sess.userID, sess.role);
+        const activities = await getActivities(sess.userID, {month: req.query.month, year: req.query.year});
+
+        res.render("student/student_activities.ejs", { webTitle: "กิจกรรม", account: student, role: roleIdToRoleName(sess.role), getParams: req.query, activities: activities });
+    },
+
+    studentActivityPage: async(req, res) => {
+        sess = req.session;
+
+        statusParams = "";
+        if (typeof sess.status !== "undefined"){
+            statusParams = sess.status;
+            delete sess.status;
+        } 
+
+        if (req.query.mode == 'add') {
+            const student = await getAccountDetail(sess.userID, 2);
+            res.render("student/student_addActivity.ejs", { webTitle: "เพิ่มกิจกรรม", account: student, role: "student", mode: "add", status: statusParams})
+        }
+
+        if (req.query.mode == "edit") {
+            const student = await getAccountDetail(sess.userID, 2);
+            const activity = await getActivityByID(req.params.activityID);
+
+            res.render("student/student_addActivity.ejs", { webTitle: "แก้ไขกิจกรรม", account: student, role: "student", mode: "edit", status: statusParams, activity: activity})
+        }
+    },
+
+    studentAchievementsPage: async(req, res) => {
+        sess = req.session;
+
+        const student = await getAccountDetail(sess.userID, sess.role);
+        const achievements = await getAchievements(sess.userID, {month: req.query.month, year: req.query.year});
+
+        res.render("student/student_achievements.ejs", { webTitle: "ผลงาน", account: student, role: roleIdToRoleName(sess.role), getParams: req.query, achievements: achievements });
+    },
+
+    studentAchievementPage: async(req, res) => {
+        sess = req.session;
+
+        statusParams = "";
+        if (typeof sess.status !== "undefined"){
+            statusParams = sess.status;
+            delete sess.status;
+        } 
+
+        if (req.query.mode == 'add') {
+            const student = await getAccountDetail(sess.userID, 2);
+            res.render("student/student_Addachievement.ejs", { webTitle: "เพิ่มผลงาน", account: student, role: "student", mode: "add", status: statusParams})
+        }
+
+        if (req.query.mode == "edit") {
+            const student = await getAccountDetail(sess.userID, 2);
+            const achievement = await getAchievementByID(req.params.achievementID);
+
+            res.render("student/student_Addachievement.ejs", { webTitle: "แก้ไขผลงาน", account: student, role: "student", mode: "edit", status: statusParams, achievement: achievement})
+        }
+    }
 }

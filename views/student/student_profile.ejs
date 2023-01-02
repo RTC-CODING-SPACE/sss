@@ -167,7 +167,7 @@
                                                         <%
                                                         departments.forEach(department => {
                                                         %>
-                                                            <option <%= (mode == "edit")?((department.departmentID == target.departmentID) ? "selected" : "") : ""%> value="<%= department.departmentID%>"><%= department.departmentName%></option>  
+                                                        <option <%= (mode == "edit")?((department.departmentID == target.departmentID) ? "selected" : "") : ""%> value="<%= department.departmentID%>"><%= department.departmentName%></option>  
                                                         <% }) %>
                                                     </select>
                                                 </div>
