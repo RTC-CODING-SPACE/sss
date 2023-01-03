@@ -53,7 +53,7 @@
                                                         (typeof user.studentID !== "undefined") ? addAction = `/profile/student/${user.studentID}/?mode=edit` : addAction = `/profile/teacher/${user.IDcard}/?mode=edit`;
                                                         (typeof user.studentID !== "undefined") ? delAction = `/delete/user/?studentID=${user.studentID}&role=student&page=admin` : delAction = `/delete/user/?IDcard=${user.IDcard}&role=teacher&page=admin`;
                                                     %>
-                                                    <a class="none-director btn btn-yellow" href="<%= addAction %>">แก้ไข</a>
+                                                    <a class="none-director btn btn-yellow" href="<%= addAction %>">ข้อมูลส่วนตัว</a>
                                                     <a class="none-director btn btn-red" href="<%= delAction %>">ลบ</a><br><br>
                                                 </div>
                                             </div>

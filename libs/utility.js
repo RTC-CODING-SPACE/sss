@@ -105,6 +105,7 @@ const timeFormatFromSec = (sec) => {
     }
 }
 
+
 // GLOBAL VARIABLES
 global.roleIdToRoleName = roleIdToRoleName
 global.md5 = md5

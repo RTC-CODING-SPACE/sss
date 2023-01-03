@@ -82,6 +82,14 @@
                                                 value="<%= (typeof transaction !== "undefined") ? transaction.detail: "" %>"
                                                 style="background-color: #f5f5fa;padding:1rem;border-radius:1rem"
                                                 >
+                                                <input
+                                                type="text"
+                                                class="form-control"
+                                                id="status" name="status"
+                                                value="<%= (typeof transaction !== "undefined") ? transaction.status: "0" %>"
+                                                style="background-color: #f5f5fa;padding:1rem;border-radius:1rem"
+                                                hidden
+                                                >
                                              </div>
                                              <div class="col-md-2">
                                              </div>

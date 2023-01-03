@@ -19,35 +19,27 @@
                     <span class="material-icons">person</span>
                     <h3>โปรไฟล์</h3>
                 </a>
-                <!-- <a  class="nav-link" href="teacher_scholarship.php" >
-                    
-                    <span class="material-icons">pie_chart</span>
-                    <h3>เพิ่มทุน</h3>
-                    
-                </a> -->
+                <a href="/notifications" class="nav-link">
+                    <span class="material-icons position-relative">
+                        notifications
+                        <% if (sess.notifications != 0) {%>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger " style="font-size: x-small;"><%= sess.notifications%></span>
+                        <% } %>
+                    </span>
+                    <h3>แจ้งเตือน</h3>
+                </a>
                 <a href="/students_list" class="nav-link">
-                    <span class="material-icons">add_circle</span>
-                    <h3>เพิ่มทุน</h3>
+                    <span class="material-icons">request_quote</span>
+                    <h3>มอบทุน</h3>
+                </a>
+                <a  class="nav-link" href="/application_users" >
+                    <span class="material-icons">assignment</span>
+                    <h3>ผู้สมัครขอทุน</h3>
                 </a>
                 <a href="/logout" class="nav-link">
                     <span class="material-icons">logout</span>
                     <h3>ออกจากระบบ</h3>
                 </a>
             </div>
-            <!-- <script>
-            const links = document.querySelectorAll('.nav-link');
-    
-                if (links.length) {
-                  links.forEach((link) => {
-                    link.addEventListener('click', (e) => {
-                      links.forEach((link) => {
-                          link.classList.remove('active');
-                      });
-                      e.preventDefault();
-                      link.classList.add('active');
-                    });
-                  });
-                }
-                </script> -->
 </aside>
 </div>

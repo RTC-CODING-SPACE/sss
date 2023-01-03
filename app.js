@@ -41,10 +41,10 @@ const { indexPage, indexScholarshipsPage, indexContactPage, indexAboutPage, inde
 const { login, logout } = require('./routes/authen');
 const { profilePage } = require('./routes/profile');
 const { studentIndexPage, studentScholarshipPage, studentGraphPage, studentTransactionsPage, studentExpensePage, studentActivitiesPage, studentActivityPage, studentAchievementsPage, studentAchievementPage } = require('./routes/student');
-const { teacherIndexPage, teacherStudentsListPage, teacherScholarshipPage } = require('./routes/teacher')
+const { teacherIndexPage, teacherStudentsListPage, teacherScholarshipPage, teacherApplicationUsersPage, teacherNotificationPage } = require('./routes/teacher')
 const { adminIndexPage, adminCreateScholarshipPage, adminUsersListPage } = require('./routes/admin')
-const { searchScholarships, searchTransaction, searchStudent, searchUser } = require('./routes/search');
-const { addData, editData, deleteData } = require('./routes/dataManagement');
+const { searchScholarships, searchTransaction, searchStudent, searchUser, searchNotifications } = require('./routes/search');
+const { addData, editData, deleteData, reportData, approveData } = require('./routes/dataManagement');
 
 // App Get
 app.get('/test', (req, res) => {
@@ -80,6 +80,9 @@ app.post('/searchTransactionDate/:page/:studentID', searchTransaction); // STUDE
 
 // ALL USER PAGES
 app.get('/profile/:role/:userID', profilePage) // ALL PROFILE PAGE
+app.get('/approve/:dataType', approveData);
+app.get('/report/:dataType', reportData);
+
 app.post('/add/:dataType', addData); // ALL ADD DATA
 app.post('/edit/:dataType', editData); // ALL EDIT DATA
 app.route('/delete/:dataType') // ALL DELETE DATA
@@ -89,8 +92,11 @@ app.route('/delete/:dataType') // ALL DELETE DATA
 app.get('/teacher', teacherIndexPage); // TEACHER INDEX
 app.get('/students_list', teacherStudentsListPage); // TEACHER STUDENT LISTS
 app.get('/AddScholarShip/:studentID', teacherScholarshipPage); // TEACHER SCHOLARSHIP
+app.get('/application_users', teacherApplicationUsersPage); // TEACHER SCHOLARSHIP
+app.get('/notifications', teacherNotificationPage); // TEACHER SCHOLARSHIP
 
 app.post('/searchStudent/:page', searchStudent); // TEACHER STUDENT SEARCH
+app.post('/searchNotifications/:page', searchNotifications); // TEACHER STUDENT SEARCH
 
 // ADMIN PAGES
 app.get('/admin', adminIndexPage); // ADMIN INDEX

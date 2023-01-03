@@ -76,8 +76,8 @@ const getAccountDetail = async(userID, roleID) => {
 // GET SCHOLARSHIPS
 const getScholarships = async(queryName = "") => {
     queryParam = "";
-    if (queryName !== "") queryParam = `WHERE name like '${queryName}%'`;
-    console.log(`SELECT * FROM scholarship ${queryParam}`)
+    if (queryName !== "") queryParam = `WHERE scholarshipName like '%${queryName}%'`;
+
     return await databaseQuery(`SELECT * FROM scholarship ${queryParam}`);
 }
 
@@ -93,7 +93,7 @@ const getTransactionDetail = async(userID, querydate = {}) => {
         if (querydate.year !== '0' && typeof querydate.year  !== "undefined") queryDateParam = queryDateParam + ` AND YEAR(date)=${querydate.year}`;
     };
 
-    let incomeLists = await databaseQuery(`SELECT listID, studentID, scholarship.name as detail, tag, amount, type, date FROM scholarshiplists INNER JOIN scholarship ON scholarshiplists.scholarshipID = scholarship.scholarshipID WHERE studentID=${userID} ${queryDateParam}`);
+    let incomeLists = await databaseQuery(`SELECT listID, studentID, scholarship.scholarshipName as detail, tag, amount, type, date FROM scholarshiplists INNER JOIN scholarship ON scholarshiplists.scholarshipID = scholarship.scholarshipID WHERE studentID=${userID} ${queryDateParam}`);
     let expenseLists = await databaseQuery(`SELECT * FROM expenselists WHERE studentID=${userID} ${queryDateParam}`);
     let AllLists = [...incomeLists, ...expenseLists];
 
@@ -195,6 +195,8 @@ const getActivityByID = async(activityID) => {
     const activity = await databaseQuery(cmd, [activityID]);
     return activity[0];
 }
+
+// GET STUDENT ACHIEVEMENTS
 const getAchievements = async(userID, querydate = {}) => {
     queryDateParam = "";
     if (Object.keys(querydate).length !== 0) {
@@ -210,11 +212,107 @@ const getAchievements = async(userID, querydate = {}) => {
     }
 }
 
-// GET STUDENT ACTIVITY BY ID
+// GET STUDENT ACHIEVEMENT BY ID
 const getAchievementByID = async(activityID) => {
     cmd = "SELECT * FROM achievement WHERE achievementID= ?"
     const achievement = await databaseQuery(cmd, [activityID]);
     return achievement[0];
+}
+
+// GET STUDENTS IN RESPONSIBILITY
+const getStudentInResponsibility = async(teacher, studentName) => {
+    if (typeof studentName == "undefined") studentName = ""
+
+    const scholarships = await getScholarshipsInResponsibility(teacher)
+
+    let students = []
+    let studentIDs = []
+
+    for (let scholarship of scholarships) {
+        cmd = `SELECT DISTINCT studentID FROM scholarshiplists WHERE scholarshipID=?`;
+        const studentIDsFetch = await databaseQuery(cmd, [scholarship.scholarshipID]);
+        studentIDs = [...studentIDs, ...studentIDsFetch];
+    }
+
+    for (let studentID of studentIDs) {
+        cmd = `SELECT * FROM student INNER JOIN department ON student.departmentID = department.departmentID WHERE studentID=? and name like '${studentName}%'`;
+        const studentFetch = await databaseQuery(cmd, [studentID.studentID])
+        students= [...students, ...studentFetch];
+    }
+
+    return students;
+}
+
+// GET SCHOLARSHIP IN RESPONSIBILITY
+const getScholarshipsInResponsibility = async(teacher) => {
+    return await databaseQuery("SELECT * FROM scholarship WHERE teacherID=?", [teacher]);
+}
+
+// GET APPLICATION USER IN RESPONSIBILITY
+const getApplicationUserInResponsibility = async(teacher, applicationUserName) => {
+    if (typeof applicationUserName == "undefined") applicationUserName = ""
+
+    const scholarships = await getScholarshipsInResponsibility(teacher)
+    let applicationUsers = []
+
+    for (let scholarship of scholarships) {
+        cmd = `SELECT * FROM applicationform INNER JOIN scholarship ON scholarship.scholarshipID = applicationform.scholarshipID INNER JOIN department ON department.departmentID = applicationform.departmentID WHERE applicationform.scholarshipID=? and applicationform.name like '${applicationUserName}%'`;
+        const applicationUsersFetch = await databaseQuery(cmd, [scholarship.scholarshipID]);
+        applicationUsers = [...applicationUsers, ...applicationUsersFetch];
+    }
+
+    return applicationUsers;
+}
+
+// GET APPLIED SCHOLARSHIP
+const getAppliedScholarships = async(studentID) => {
+    const scholarsipIDs = await databaseQuery("SELECT DISTINCT scholarshipID FROM scholarshiplists WHERE studentID=?", [studentID]);
+    
+    let scholarship = []
+
+    for (let scholarsipID of scholarsipIDs) {
+        const scholarshipFetch = await databaseQuery("SELECT * FROM scholarship WHERE scholarshipID=? LIMIT 1", [scholarsipID]);
+        scholarship = [...scholarship, ...scholarshipFetch];
+    }
+    return scholarship;
+}
+
+const getNotifications = async(students = [], querydate = {}) => {
+    queryDateParam = "";
+    if (Object.keys(querydate).length !== 0) {
+        if (querydate.month !== '0' && typeof querydate.month !== "undefined") queryDateParam = queryDateParam + ` AND MONTH(date)=${querydate.month}`;
+        if (querydate.year !== '0' && typeof querydate.year  !== "undefined") queryDateParam = queryDateParam + ` AND YEAR(date)=${querydate.year}`;
+    };
+
+    let notifications = 0;
+    
+    let notiFetchs = []
+    let notifyDetail = []
+    for (let student of students) {
+        const notify = await databaseQuery("SELECT COUNT(notifyStatus) as notifications FROM `expenselists` WHERE studentID=? AND notifyStatus=0;", [student.studentID]);
+        const notifyDetailFetch = await databaseQuery(`SELECT expenselists.listID, student.studentID, student.name, expenselists.amount, expenselists.tag, expenselists.date FROM expenselists INNER JOIN student ON student.studentID = expenselists.studentID WHERE student.studentID=? ${queryDateParam}`, [student.studentID]);
+        notiFetchs = [...notiFetchs, ...notify];
+        notifyDetail = [...notifyDetail, ...notifyDetailFetch];
+    }
+
+    for (noti of notiFetchs) {
+        notifications += noti.notifications
+    }
+
+    notifyDetail.sort(function(a, b) {
+        return new Date(b.date) - new Date(a.date);
+    })
+
+    return {
+        unread: notifications,
+        notifyDetail: notifyDetail
+    }
+}
+
+const updateUnReadToRead = async(notifications = []) => {
+    for (let notification of notifications) {
+        await updateDB("expenselists", {notifyStatus: 1}, `listID= ${notification.listID}`)
+    }
 }
 
 global.db = db;
@@ -236,10 +334,16 @@ global.getActivities = getActivities
 global.getActivityByID = getActivityByID
 global.getAchievements = getAchievements
 global.getAchievementByID = getAchievementByID
+global.getAppliedScholarships = getAppliedScholarships
 
 // teacher & admin tool
 global.getStudentsByName = getStudentsByName
 global.getTeachersByName = getTeachersByName
+global.getStudentInResponsibility = getStudentInResponsibility
+global.getApplicationUserInResponsibility = getApplicationUserInResponsibility
+global.getScholarshipsInResponsibility = getScholarshipsInResponsibility
+global.getNotifications = getNotifications
+global.updateUnReadToRead = updateUnReadToRead
 
 module.exports = {
 }

@@ -1,6 +1,8 @@
 module.exports = {
     profilePage: async(req, res) => {
-        req.sess
+        sess = req.session
+
+        if (typeof sess.role == "undefined") return res.redirect('/');
 
         switch (req.params.role) {
             case "student": roleID = 2; webTitle = "โปรไฟล์ | นักเรียน"; break;

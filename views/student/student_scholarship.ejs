@@ -19,7 +19,7 @@
                                     <form action="/seachScholarship/" method="post">
                                         <div class="row mx-auto">
                                             <div class="col-7">
-                                                <input type="text" class="form-control my-form" name="query" id="query" placeholder="ค้นหาชื่อทุน">
+                                                <input type="text" class="form-control my-form" name="query" id="query" placeholder="ค้นหาชื่อทุน" value="<%= (typeof queryParams !== "undefined") ? queryParams : ""%>">
                                             </div>
                                             <div class="col-auto">
                                                 <button type="submit" class="btn btn-green prl-2">🔍Search</button>
@@ -39,9 +39,8 @@
                                                 <div class="mycard shadow">
                                                     <div class="card text-left px-5 pt-5 pb-1 base-scholarship " style="height:80vh;background: url('/assets/img/index_scholarship.png');background-size: 70%;background-color:#F6F6FF;background-repeat: no-repeat;background-position:center;">
                                                         <div class="card-body">
-                                                            <h1 class="card-title">
-                                                                <%= scholarship.name %>
-                                                            </h1>
+                                                            <% let find = appliedScholarships.find(scholarshipREF => scholarshipREF.scholarshipName == scholarship.scholarshipName)%>
+                                                            <h1 class="card-title"><%= scholarship.scholarshipName %> <%= (typeof find != "undefined") ? "(ได้รับแล้ว)": ""%></h1>
                                                             <br>
                                                             <h4 class="card-text">เงินทุน :<%= new Intl.NumberFormat().format(scholarship.prize) %><h4>
                                                             <br>

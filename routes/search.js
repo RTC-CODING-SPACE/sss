@@ -13,6 +13,11 @@ module.exports = {
 
         res.redirect(`/${req.params.page}/${req.params.studentID}/?month=${req.body.month}&year=${req.body.year}${printParam}`);
     },
+    searchNotifications: async(req, res) => {
+        sess = req.session;
+
+        res.redirect(`/${req.params.page}/?month=${req.body.month}&year=${req.body.year}`);
+    },
 
     searchStudent: async(req, res) => {
         sess.req.session

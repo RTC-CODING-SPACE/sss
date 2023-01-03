@@ -115,6 +115,10 @@ module.exports = {
                 req.body.picture = fileName;
             }
 
+            if (req.body.status != 0) {
+                req.body.status = 2;
+            }
+
             await updateDB("expenselists", req.body, `listID="${req.query.listID}"`)
             sess.status = {status: "success", text: "EDITED TRANSACTION SUCCESSFULLY."}
 
@@ -192,4 +196,26 @@ module.exports = {
             res.redirect(`/achievements/${sess.userID}`);
         }
     },
+
+    approveData: async(req, res) => {
+        sess = req.session
+
+        if (req.params.dataType == "transaction") {
+            data = {status: 0};
+            await updateDB("expenselists", data, `listID= ${req.query.listID}`);
+
+            res.redirect(`/transactions/${req.query.studentID}`)
+        }
+    },
+
+    reportData: async(req, res) => {
+        sess = req.session
+
+        if (req.params.dataType == "transaction") {
+            data = {status: 1};
+            await updateDB("expenselists", data, `listID= ${req.query.listID}`);
+
+            res.redirect(`/transactions/${req.query.studentID}`)
+        }
+    }
 }

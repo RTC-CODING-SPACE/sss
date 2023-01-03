@@ -3,7 +3,7 @@ const {databaseQuery, getAccountDetail, getTransactionDetail} = require('./datab
 test_data = { "id": 1, "name": 'pat', "surname": 'tk' }
 
 test = async() => {
-    const students = await getActivities("63209010016");
+    const students = await getNotifications([{studentID: 63209010016}]);
     console.log(students)
     return 0;
 }

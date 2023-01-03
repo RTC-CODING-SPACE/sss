@@ -94,6 +94,7 @@
                                             <th></th>
                                             <th></th>
                                             <th></th>
+                                            <th></th>
                                         </tr>
                                     </thead>
                                     <% 
@@ -118,7 +119,20 @@
                                                     <a class="none-director" href="/expense/<%= list.listID%>/?mode=edit"><button class="btn btn-yellow ">แก้ไข</button></a>
 
                                                     <a class="none-director" href="/delete/expense/?listID=<%= list.listID%>"><button class="btn btn-red ">ลบ</button></a>
+                                                <% } if (list.type == '-' && role != "student") { %>
+                                                    <a class="none-director btn btn-yellow me-1" href="/report/transaction/?listID=<%= list.listID%>&studentID=<%= student.studentID%>">รายงาน</a>
+                                                    <% if (list.status == 2){ %>
+                                                        <a class="none-director btn btn-green me-1" href="/approve/transaction/?listID=<%= list.listID%>&studentID=<%= student.studentID%>">อนุมัติ</a>
                                                     <% } %>
+                                                <% }%>
+                                            </td>
+                                            <td>
+                                                <% if (list.type == '-' ) { if (list.status != 0) { 
+                                                    list.status == 1 ? color = "danger" : color = "warning"
+                                                    list.status == 1 ? statusText = "REPORTED" : statusText = "WATING APPROVE"
+                                                %>
+                                                    <i class="bi bi-exclamation-triangle-fill <%= color%>"  data-bs-toggle="tooltip" data-bs-title="<%= statusText%>"></i>
+                                                <% }}%>
                                             </td>
                                         </tr>
                                         <% }) %>
@@ -165,6 +179,9 @@
             var photoPath = event.relatedTarget.id
             document.getElementById("transaction_image").src= `/assets/img/transactions/${photoPath}`
         })
+
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
     </script>
 </body>
 </html>

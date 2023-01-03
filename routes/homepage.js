@@ -1,11 +1,20 @@
 module.exports = {
     indexPage: (req, res) => {
         sess = req.session;
-        res.render('index/index.ejs', { webTitle: "หน้าหลัก" });
+
+        if (sess.userID) {
+            return res.redirect(`/${roleIdToRoleName(sess.role)}`);
+        }
+
+        return res.render('index/index.ejs', { webTitle: "หน้าหลัก" });
     },
 
     indexScholarshipsPage: async(req, res) => {
         sess = req.session;
+
+        if (sess.userID) {
+            return res.redirect(`/${roleIdToRoleName(sess.role)}`);
+        }
 
         const scholarships = await databaseQuery("SELECT * FROM scholarship")
         res.render('index/index_scholarship.ejs', {webTitle: "ทุนการศึกษา", scholarships: scholarships});
@@ -13,16 +22,30 @@ module.exports = {
 
     indexContactPage: (req, res) => {
         sess = req.session;
+
+        if (sess.userID) {
+            return res.redirect(`/${roleIdToRoleName(sess.role)}`);
+        }
+
         res.render('index/index_contact.ejs', { webTitle: "ติดต่อสอบถาม" });
     },
 
     indexAboutPage: (req, res) => {
         sess = req.session;
+
+        if (sess.userID) {
+            return res.redirect(`/${roleIdToRoleName(sess.role)}`);
+        }
+
         res.render('index/index_about.ejs', { webTitle: "เกี่ยวกับเรา" });
     },
 
     indexLoginPage: (req, res) => {
         sess = req.session;
+
+        if (sess.userID) {
+            return res.redirect(`/${roleIdToRoleName(sess.role)}`);
+        }
 
         statusParams = "";
         if (typeof sess.status !== "undefined"){
@@ -37,6 +60,10 @@ module.exports = {
     indexApplicationPage: async(req, res) => {
         sess = req.session;
 
+        if (sess.userID) {
+            return res.redirect(`/${roleIdToRoleName(sess.role)}`);
+        }
+        
         const departments = await databaseQuery("SELECT * FROM department");
         const scholarships = await databaseQuery("SELECT * FROM scholarship")
 

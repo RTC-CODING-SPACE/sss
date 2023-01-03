@@ -48,8 +48,8 @@
                                                         <h3 class="card-title"><%= student.name%></h3>
                                                         <p class="card-text">แผนก: <%= student.departmentName %></p>
                                                         <p class="card-text">ยอดคงเหลือ : <%= new Intl.NumberFormat().format(studentsBalance[student.studentID])%> THB</p>
-                                                        <a class="none-director" href="/profile/student/<%= student.studentID%>/?mode=edit"><button class="btn btn-yellow ">แก้ไข</button></a>
-                                                        <a class="none-director" href="/transactions/<%= student.studentID%>"><button class="btn btn-green ">ดูข้อมูล</button></a>
+                                                        <a class="none-director" href="/profile/student/<%= student.studentID%>/?mode=edit"><button class="btn btn-yellow ">ข้อมูลส่วนตัว</button></a>
+                                                        <a class="none-director" href="/transactions/<%= student.studentID%>"><button class="btn btn-green ">การใช้จ่าย</button></a>
                                                     </div>
                                                 </div>
                                             </div>

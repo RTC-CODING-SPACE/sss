@@ -51,7 +51,7 @@
                                                 <select class="form-select" name="scholarshipID" id="scholarshipID" style="background-color: #f5f5fa;width:100%;" required>
                                                     <option selected disabled value="">เลือกทุน</option>
                                                     <% scholarships.forEach(scholarship => { %>
-                                                    <option value="<%= scholarship.scholarshipID%>" data-prize="<%= scholarship.prize%>"><%= new Intl.NumberFormat().format(scholarship.prize)%> บาท/นักเรียน - <%= scholarship.name%></option>
+                                                    <option value="<%= scholarship.scholarshipID%>" data-prize="<%= scholarship.prize%>"><%= new Intl.NumberFormat().format(scholarship.prize)%> บาท/นักเรียน - <%= scholarship.scholarshipName%></option>
                                                     <% }) %>
                                                 </select>
                                              </div>
