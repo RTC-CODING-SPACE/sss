@@ -15,7 +15,7 @@ module.exports = {
             const account = await getAccountDetail(sess.userID, sess.role);
             const target = await getAccountDetail(req.params.userID, roleID);
             const departments = await databaseQuery("SELECT * FROM department");
-            console.log(target)
+            
             statusParams = "";
             if (typeof sess.status !== "undefined"){
                 statusParams = sess.status;

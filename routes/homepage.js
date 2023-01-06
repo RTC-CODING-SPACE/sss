@@ -2,6 +2,13 @@ module.exports = {
     indexPage: (req, res) => {
         sess = req.session;
 
+        const authToken = req.cookies.auth_token
+        if (authToken) {
+            const authTokenDecoded = jwt.verify(authToken, "rtcsss");
+            sess.userID = authTokenDecoded.userID;
+            sess.role = authTokenDecoded.role;
+        }
+        
         if (sess.userID) {
             return res.redirect(`/${roleIdToRoleName(sess.role)}`);
         }

@@ -44,17 +44,18 @@ module.exports = {
     studentGraphPage: async(req, res) => {
         sess = req.session;
 
-        if (sess.role != 2) {
+        if (sess.role != 2 && sess.role != 1) {
             return res.redirect(`/${roleIdToRoleName(sess.role)}`);
         } else if (typeof sess.role == "undefined") {
             return res.redirect('/');
         }
         
+        const account = await getAccountDetail(sess.userID, sess.role);
         const student = await getAccountDetail(req.params.studentID, 2);
         const transactions = await getTransactionDetail(req.params.studentID, {month: req.query.month, year: req.query.year});
 
         if (typeof req.query.print == "undefined") return res.render("student/student_graph.ejs", { webTitle: "สรุุปค่าใช้จ่าย", account: student, role: "student", transactionsDetail: transactions, getParams: req.query });
-        return res.render("student/student_graphPrint.ejs", { webTitle: "สรุุปค่าใช้จ่าย", account: student, role: "student", transactionsDetail: transactions, getParams: req.query });
+        return res.render("student/student_graphPrint.ejs", { webTitle: "สรุุปค่าใช้จ่าย", account: account, student: student, role:  roleIdToRoleName(sess.role), transactionsDetail: transactions, getParams: req.query });
         
     },
 

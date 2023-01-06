@@ -2,6 +2,7 @@ const path = require('path');
 const md5 = require('md5');
 const mysql = require('mysql');
 const config = require(path.join(__dirname, '..','/config.json'))
+const util = require('util')
 require('./utility');
 
 // CONNECT MYSQL
@@ -18,16 +19,16 @@ db.connect((err) => {
     console.log("Connected to database successfully");
 })
 
-// DATABASE QUERY
-const databaseQuery = (cmd, data = []) => {
-    return new Promise((resolve, reject) => {
-        if(config.develope.sql_debug_log) console.log(cmd);
-        db.query(cmd, data, (err, result) => {
-            if (err) console.log("MYSQLI ERROR: ", err);
-            if (result.length == 0) resolve(result);
-            resolve(result);
-        })
-    })
+db.query = util.promisify(db.query)
+
+const databaseQuery =  async (cmd, data = []) => {
+    if(config.develope.sql_debug_log) console.log(cmd);
+    try {
+        const resultFetch = await db.query(cmd, data)
+        return resultFetch;
+    } catch (e) {
+        return {status: "failed", errno: e.errno};
+    }
 }
 
 // LOGIN
@@ -144,7 +145,15 @@ const updateDB = async(database_table, data = {}, condition) => {
         params.push(value);
     }
     cmd += ` WHERE ${condition}`
-    return await databaseQuery(cmd, params);
+    const result = await databaseQuery(cmd, params);
+    if (typeof result.status == "undefined") {
+        return {
+            status: "success",
+        };
+    } else {
+        return result;
+    }
+
 }
 
 // DELETE DATA

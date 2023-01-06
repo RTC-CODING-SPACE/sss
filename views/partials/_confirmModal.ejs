@@ -1,0 +1,25 @@
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">ยืนยัน</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          กดปุ่มยื่นยันเพื่อทำรายการ
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+          <a id="confirmBtn" type="button" class="btn btn-red">ยืนยัน</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    var confirmbtn = document.getElementById("confirmBtn");
+    const confirmModal = document.getElementById('confirmModal');
+    confirmModal.addEventListener('show.bs.modal', event => {
+        var hrefPath = event.relatedTarget.dataset.href
+        confirmbtn.href=`${hrefPath}`;
+    })
+  </script>

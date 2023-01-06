@@ -139,10 +139,14 @@ module.exports = {
             }
 
             (req.body.password == "") ? delete req.body.password : md5(req.body.password);
-            await updateDB(role, req.body, `${Object.keys(req.query)[0]}= "${userID}"`)
-            sess.status = {status: "success", text: "UPDATED PROFILE SUCCESSFULLY"}
-
-            return res.redirect(`/profile/${role}/${userID}/?mode=edit`);
+            const result = await updateDB(role, req.body, `${Object.keys(req.query)[0]}= "${userID}"`)
+            if (result.status == "success") sess.status = {status: "success", text: "UPDATED PROFILE SUCCESSFULLY"};
+            if (result.status == "failed") {
+                if (result.errno == 1062) text = "ID / NAME IS ALREADY IN THE SYSTEM"
+                sess.status = {status: "failed", text: text};
+            }
+            
+            return res.redirect(`/profile/${role}/${req.body.studentID || req.body.IDcard || userID}/?mode=edit`);
         }
 
         // EDIT ACTIVITY

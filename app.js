@@ -9,7 +9,7 @@ const express = require('express');
 const sessions = require('express-session');
 const bodyParser = require("body-parser");
 const fileUpload = require('express-fileupload');
-
+const cookieParser = require('cookie-parser')
 
 // App setup
 const app = express();
@@ -31,6 +31,7 @@ app.use(sessions({
     resave: false,
     saveUninitialized: true
 }));
+app.use(cookieParser());
 app.use(fileUpload({
     useTempFiles : true,
     tempFileDir : path.join(__dirname, "/tmp/")
@@ -49,6 +50,7 @@ const { addData, editData, deleteData, reportData, approveData } = require('./ro
 // App Get
 app.get('/test', (req, res) => {
     sess = req.session;
+    res.clearCookie('auth_token')
     res.render('test.ejs', { webTitle: "ทดสอบระบบ" });
 })
 

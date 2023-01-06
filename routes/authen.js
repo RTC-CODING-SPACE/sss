@@ -1,3 +1,9 @@
+const jwt = require('jsonwebtoken')
+
+function generateAuthToken(userID, role) {
+    return jwt.sign({userID: userID, role: role}, "rtcsss");
+}
+
 module.exports = {
     login: async(req, res) => {
         sess = req.session
@@ -7,6 +13,17 @@ module.exports = {
             if (account) {
                 sess.userID = account.userID;
                 sess.role = account.role;
+
+                if (req.body.remember) {
+                    const authTokenGen = generateAuthToken(account.userID, account.role);
+        
+                    res.cookie("auth_token", authTokenGen, {
+                        expires: new Date(Date.now() + 604800000),
+                        httpOnly: true,
+                    })
+                }
+
+
                 return res.redirect('/student');
             }
         }
@@ -16,6 +33,16 @@ module.exports = {
             if (account) {
                 sess.userID = account.userID;
                 sess.role = account.role;
+
+                if (req.body.remember) {
+                    const authTokenGen = generateAuthToken(account.userID, account.role);
+        
+                    res.cookie("auth_token", authTokenGen, {
+                        expires: new Date(Date.now() + 604800000),
+                        httpOnly: true,
+                    })
+                }
+
                 if (account.role == 1) return res.redirect('/teacher');
                 return res.redirect('/admin');
             }
@@ -27,6 +54,7 @@ module.exports = {
     
     logout: (req, res) => {
         req.session.destroy();
+        res.clearCookie('auth_token')
         res.redirect('/');
     }
 }

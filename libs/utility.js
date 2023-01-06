@@ -24,6 +24,8 @@ const path = require('path');
 // CONFIG
 const config = require(path.join(__dirname, '..','/config.json'))
 
+const jwt = require('jsonwebtoken')
+
 // FILE UPLOAD
 const uploadToServer = (itemID, file, folder) => {
     if (folder == "profile") {
@@ -110,6 +112,7 @@ const timeFormatFromSec = (sec) => {
 global.roleIdToRoleName = roleIdToRoleName
 global.md5 = md5
 global.path = path
+global.jwt = jwt
 global.config = config
 global.uploadToServer = uploadToServer
 global.timeSubtract = timeSubtract

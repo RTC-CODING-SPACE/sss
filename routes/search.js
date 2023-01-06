@@ -1,5 +1,3 @@
-const puppeteer = require('puppeteer');
-
 module.exports = {
     searchScholarships: async(req, res) => {
         sess = req.session;
